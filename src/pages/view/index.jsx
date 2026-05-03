@@ -143,7 +143,6 @@ const handleOpenAllocation = (row) => {
     <Card className="ml-10 border max-w-[75%] overflow-x-auto  border-blue-gray-100 shadow-sm p-6 w-fit my-4 h-fit">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Vehicle Allocation Records</h2>
-        <Button className="bg-teal-500" onClick={handleOpen}>+ Add New Vehicle</Button>  
       </div>
 
                              <ServerSideTableComponent

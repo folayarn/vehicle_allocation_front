@@ -34,7 +34,7 @@ const Header = () => {
       <Navbar
         blurred
         shadow={false}
-        className="sticky bg-teal-600 top-0 z-50 h-max max-w-full rounded-none border-0 p-2 md:p-4 shadow-md"
+        className="sticky bg-green-900 top-0 z-50 h-max max-w-full rounded-none border-0 p-2 md:p-4 shadow-md"
       >
         <div className="flex items-center justify-between text-blue-gray-900">
           {/* Logo and Sidebar Toggle */}
@@ -55,12 +55,12 @@ const Header = () => {
           </div>
 
           {/* System Title with Responsive Truncation */}
-          <Tooltip content="EXCISE REGISTER SYSTEM" placement="bottom">
+          <Tooltip content="VEHICLE ALLOCATION PORTAL" placement="bottom">
             <Typography 
-              className="text-center text-sm md:text-lg font-bold text-white
+              className="text-center text-sm md:text-xl font-bold text-white
               truncate max-w-[120px] sm:max-w-[180px] md:max-w-none px-2"
             >
-            {sessionStorage.getItem("role") === "ftz" ? "FREE TRADE ZONE REGISTER" : "EXCISE REGISTER SYSTEM"}
+            {"VEHICLE ALLOCATION PORTAL"}
             </Typography>
           </Tooltip>
 

@@ -335,7 +335,7 @@ const ServerSideTableComponent = ({
         <div className="flex flex-wrap gap-2">
           <Button 
             size="sm" 
-            color="teal" 
+            color="green" 
             onClick={handlePDFExport}
             className="flex items-center gap-1 hover:shadow-md transition-all"
             disabled={isLoading}
@@ -352,7 +352,7 @@ const ServerSideTableComponent = ({
             >
               <Button 
                 size="sm" 
-                color="teal" 
+                color="green" 
                 className="flex items-center gap-1 hover:shadow-md transition-all"
                 disabled={isLoading}
               >
@@ -365,7 +365,7 @@ const ServerSideTableComponent = ({
           {type === 'activeProduction' && (
             <Button 
               size="sm" 
-              color="teal" 
+              color="green" 
               onClick={() => window.print()} 
               className="flex items-center gap-1 hover:shadow-md transition-all"
               disabled={isLoading}
@@ -377,7 +377,7 @@ const ServerSideTableComponent = ({
       
           <Button 
             size="sm" 
-            color="teal" 
+            color="green" 
             onClick={handleRefresh}
             className="flex items-center gap-1 hover:shadow-md transition-all"
             disabled={isLoading}

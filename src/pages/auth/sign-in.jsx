@@ -349,7 +349,7 @@ export function SignIn() {
                                         >
                                             <Button
                                                 size="lg"
-                                                className="relative w-full bg-gradient-to-r from-teal-500 to-teal-700 hover:from-teal-600 hover:to-teal-800 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all overflow-hidden group"
+                                                className="relative w-full bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all overflow-hidden group"
                                                 type="submit"
                                                 disabled={loading}
                                             >
@@ -371,7 +371,7 @@ export function SignIn() {
                                                         </>
                                                     )}
                                                 </span>
-                                                <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-teal-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                                                <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-green-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
                                             </Button>
                                         </motion.div>
 
@@ -406,7 +406,7 @@ export function SignIn() {
                                                 as="a"
                                                 href="#"
                                                 variant="small"
-                                                className="font-medium text-teal-600 hover:text-teal-800 transition-colors"
+                                                className="font-medium text-green-600 hover:text-green-800 transition-colors"
                                             >
                                                 Contact admin
                                             </Typography>
