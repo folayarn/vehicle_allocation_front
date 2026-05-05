@@ -19,6 +19,8 @@ import { FetchServerTableThunk } from "../../store/thunks/ServerTableThunk";
 import ViewVehicle from "../../components/ViewVehicle";
 import Allocation from "../../components/Allocation";
 import { FetchAllocationByVehicleThunk } from "../../store/thunks/AllocationThunk";
+import { FetchRemarksByVehicleThunk } from "../../store/thunks/RemarkThunk";
+import RemarkForm from "../../components/RemarkForm";
 
  const ViewAllocationPage = () => {
   const [open, setOpen] = useState(false);
@@ -26,7 +28,8 @@ import { FetchAllocationByVehicleThunk } from "../../store/thunks/AllocationThun
   const [openView, setOpenView] = useState(false);
   const [openAllocation, setOpenAllocation] = useState(false);
   const [single, setSingle] = useState({})
-  
+    const [openRemark, setRemark] = useState(false);
+
   const dispatch=useDispatch()
   const isServerSide = true;
    const serverTableState = useSelector((state) => state.FetchSlice?.serverTable);
@@ -70,7 +73,14 @@ const handleOpenAllocation = (row) => {
    });
   };
   
- 
+ const handleOpenRemark =(row)=>{
+  
+      dispatch(FetchRemarksByVehicleThunk(row.original.id)).then(() => {    
+   setSingle(row.original)
+
+        setRemark(true)
+ })
+ }
 
   const role = sessionStorage.getItem("role");
   
@@ -116,6 +126,12 @@ const handleOpenAllocation = (row) => {
         <Button size="sm" color="gray" onClick={() => handleOpenView(row)}>
             <FaEye /> 
         </Button>
+{role!=="zone" && (
+ <Button size="sm" color="green" onClick={() => handleOpenRemark(row)}>
+          Add Remark
+        </Button>
+) }
+       
         </div>
     ),
   },
@@ -140,7 +156,7 @@ const handleOpenAllocation = (row) => {
 
   return (
     <>
-    <Card className="ml-10 border max-w-[75%] overflow-x-auto  border-blue-gray-100 shadow-sm p-6 w-fit my-4 h-fit">
+    <Card className="ml-10 border  overflow-x-auto  border-blue-gray-100 shadow-sm p-10 my-4 h-fit">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Vehicle Allocation Records</h2>
       </div>
@@ -172,6 +188,11 @@ const handleOpenAllocation = (row) => {
     </ModalComponent>
     <ModalComponent size={"xl"} open={openAllocation} setOpen={setOpenAllocation} title="Allocate Vehicle">
       <Allocation  setOpen={setOpenAllocation} vehicleData={single}/>
+    </ModalComponent>
+
+
+     <ModalComponent size={"xl"} open={openRemark} setOpen={setRemark} title="Add Remark">
+      <RemarkForm  setOpen={setRemark} vehicleData={single}/>
     </ModalComponent>
  </> );
 };

@@ -16,14 +16,16 @@ import {
   FaSave,
   FaCar,
   FaMapMarkerAlt,
-  FaInfoCircle
+  FaInfoCircle,
+  FaFileUpload,
+  FaFileAlt,
+  FaDownload
 } from 'react-icons/fa';
 import { MdWork, MdLocationOn } from 'react-icons/md';
 import { GiGearHammer } from 'react-icons/gi';
 import { SelectField } from '../SelectionField';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
-  
   CreateAllocationThunk, 
   UpdateAllocationThunk, 
   DeleteAllocationThunk 
@@ -31,19 +33,21 @@ import {
 import moment from 'moment';
 import { FetchAllocationByVehicleThunk } from '../../store/thunks/AllocationThunk';
 
-const Allocation = ({  setOpen, vehicleData }) => {
+const Allocation = ({ setOpen, vehicleData }) => {
   const dispatch = useDispatch();
-  const {  loading: postLoading, error: postError } = useSelector((state) => state.PostSlice);
+  const { loading: postLoading, error: postError } = useSelector((state) => state.PostSlice);
   const { data: allocationList, loading, error } = useSelector((state) => state.FetchSlice);
   const [selectedAllocation, setSelectedAllocation] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [vehicleId, setVehicleId] = useState(vehicleData?.id || null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [fileError, setFileError] = useState('');
 
   useEffect(() => {
     if (vehicleData?.id) {
-        setVehicleId(vehicleData.id);
-      dispatch(FetchAllocationByVehicleThunk(vehicleData.id ));
+      setVehicleId(vehicleData.id);
+      dispatch(FetchAllocationByVehicleThunk(vehicleData.id));
     }
   }, [vehicleData?.id, dispatch]);
 
@@ -79,7 +83,6 @@ const Allocation = ({  setOpen, vehicleData }) => {
       .max(100, 'Office cannot exceed 100 characters')
       .transform((value) => value?.toUpperCase())
       .nullable(),
-    
     yearOfAllocation: Yup.number()
       .typeError('Year must be a valid year')
       .min(1900, 'Year must be 1900 or later')
@@ -99,21 +102,72 @@ const Allocation = ({  setOpen, vehicleData }) => {
     yearOfAllocation: selectedAllocation?.yearOfAllocation || new Date().getFullYear(),
   };
 
+  const validateFile = (file) => {
+    if (!file) {
+      if (!isEditMode) {
+        setFileError('File is required');
+        return false;
+      }
+      return true;
+    }
+
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const maxSize = 10 * 1024 * 1024; // 10MB
+
+    if (!allowedTypes.includes(file.type)) {
+      setFileError('Invalid file type. Allowed: PDF, JPG, JPEG, PNG, DOC, DOCX');
+      return false;
+    }
+
+    if (file.size > maxSize) {
+      setFileError('File size must be less than 10MB');
+      return false;
+    }
+
+    setFileError('');
+    return true;
+  };
+
+  const handleFileChange = (event, setFieldValue) => {
+    const file = event.currentTarget.files[0];
+    setSelectedFile(file);
+    if (validateFile(file)) {
+      setFieldValue('file', file);
+    } else {
+      setFieldValue('file', null);
+    }
+  };
+
   const handleSubmit = async (values, { resetForm, setSubmitting }) => {
     try {
-      const submitData = {
-        ...values,
-        vehicleId: vehicleId,
-        chassisNumber: vehicleData?.chassisNumber || '',
-      };
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('VehicleId', vehicleId);
+      formData.append('ChassisNumber', vehicleData?.chassisNumber || '');
+      formData.append('OfficerName', values.officerName || '');
+      formData.append('OfficerSerNo', values.officerSerNo || '');
+      formData.append('Type', values.type);
+      formData.append('Rank', values.rank || '');
+      formData.append('Command', values.command);
+      formData.append('Zone', values.zone);
+      formData.append('Department', values.department || '');
+      formData.append('Office', values.office || '');
+      formData.append('Unit', values.unit || '');
+      formData.append('YearOfAllocation', values.yearOfAllocation);
+      
+      // Append file if selected
+      if (selectedFile) {
+        formData.append('FilePath', selectedFile);
+      }
 
       if (isEditMode && selectedAllocation?.id) {
-        await dispatch(UpdateAllocationThunk({ id: selectedAllocation.id, data: submitData })).unwrap();
+        await dispatch(UpdateAllocationThunk({ id: selectedAllocation.id, data: formData })).unwrap();
       } else {
-        await dispatch(CreateAllocationThunk(submitData)).unwrap();
+        await dispatch(CreateAllocationThunk(formData)).unwrap();
       }
 
       resetForm();
+      setSelectedFile(null);
       setShowForm(false);
       setIsEditMode(false);
       setSelectedAllocation(null);
@@ -129,7 +183,7 @@ const Allocation = ({  setOpen, vehicleData }) => {
     if (window.confirm('Are you sure you want to delete this allocation?')) {
       try {
         await dispatch(DeleteAllocationThunk(allocationId)).unwrap();
-        dispatch(FetchAllocationByVehicleThunk(vehicleData?.id ));
+        dispatch(FetchAllocationByVehicleThunk(vehicleData?.id));
       } catch (error) {
         console.error('Error deleting allocation:', error);
       }
@@ -140,18 +194,28 @@ const Allocation = ({  setOpen, vehicleData }) => {
     setSelectedAllocation(allocation);
     setIsEditMode(true);
     setShowForm(true);
+    setSelectedFile(null);
+    setFileError('');
   };
 
   const handleAddNew = () => {
     setSelectedAllocation(null);
     setIsEditMode(false);
     setShowForm(true);
+    setSelectedFile(null);
+    setFileError('');
+  };
+
+  const handleDownload = (filePath, allocationId) => {
+    // You can implement download functionality
+    window.open(`http://localhost:7119${filePath}`, '_blank');
   };
 
   const typeOptions = [
     { value: 'Staff', label: 'Allocation to Staff' },
     { value: 'Office', label: 'Allocation to Office' },
     { value: 'Department', label: 'Allocation to Department' },
+    { value: 'Auction', label: 'Allocation Through Auction' },
   ];
 
   const rankOptions = [
@@ -212,7 +276,6 @@ const Allocation = ({  setOpen, vehicleData }) => {
     { value: "D", label: "Zone D" },
   ];
 
-  // Generate year options
   const currentYear = new Date().getFullYear();
   const yearOptions = [];
   for (let year = 2000; year <= currentYear + 5; year++) {
@@ -263,8 +326,6 @@ const Allocation = ({  setOpen, vehicleData }) => {
             </Button>
           </div>
 
-         
-
           {/* Allocation Form Modal */}
           <Dialog open={showForm} handler={setShowForm} size="lg">
             <DialogHeader>
@@ -285,7 +346,6 @@ const Allocation = ({  setOpen, vehicleData }) => {
                     <div className="lg:col-span-2">
                       <Field
                         name="type"
-                
                         component={SelectField}
                         options={typeOptions}
                         placeholder="Select Type of Allocation"
@@ -294,53 +354,47 @@ const Allocation = ({  setOpen, vehicleData }) => {
                       <ErrorMessage name="type" component="div" className="text-red-500 text-sm mt-1" />
                     </div>
                    
-                   
-                   
-                    {/* Officer Name */}
-                    {values.type === 'Staff' && (<>
-                    <div>
-                      <Field
-                        name="officerName"
-                        as={Input}
-                        label="Officer Name"
-                        size="lg"
-                        onChange={(e) => {
-                          setFieldValue('officerName', e.target.value.toUpperCase());
-                        }}
-                      />
-                      <ErrorMessage name="officerName" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
+                    {values.type === 'Staff' && (
+                      <>
+                        <div>
+                          <Field
+                            name="officerName"
+                            as={Input}
+                            label="Officer Name"
+                            size="lg"
+                            onChange={(e) => {
+                              setFieldValue('officerName', e.target.value.toUpperCase());
+                            }}
+                          />
+                          <ErrorMessage name="officerName" component="div" className="text-red-500 text-sm mt-1" />
+                        </div>
 
-                    {/* Service Number */}
-                    <div>
-                      <Field
-                        name="officerSerNo"
-                        as={Input}
-                        label="Service Number"
-                        size="lg"
-                        onChange={(e) => {
-                          setFieldValue('officerSerNo', e.target.value.toUpperCase());
-                        }}
-                      />
-                      <ErrorMessage name="officerSerNo" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
+                        <div>
+                          <Field
+                            name="officerSerNo"
+                            as={Input}
+                            label="Service Number"
+                            size="lg"
+                            onChange={(e) => {
+                              setFieldValue('officerSerNo', e.target.value.toUpperCase());
+                            }}
+                          />
+                          <ErrorMessage name="officerSerNo" component="div" className="text-red-500 text-sm mt-1" />
+                        </div>
 
-                    {/* Rank */}
-                    <div>
-                      <Field
-                        name="rank"
-                        component={SelectField}
-                        options={rankOptions}
-                        placeholder="Select Rank"
-                        label="Rank"
-                      />
-                      <ErrorMessage name="rank" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
-</>)}
-                  
-                   
+                        <div>
+                          <Field
+                            name="rank"
+                            component={SelectField}
+                            options={rankOptions}
+                            placeholder="Select Rank"
+                            label="Rank"
+                          />
+                          <ErrorMessage name="rank" component="div" className="text-red-500 text-sm mt-1" />
+                        </div>
+                      </>
+                    )}
 
-                    {/* Command */}
                     <div>
                       <Field
                         name="command"
@@ -352,7 +406,6 @@ const Allocation = ({  setOpen, vehicleData }) => {
                       <ErrorMessage name="command" component="div" className="text-red-500 text-sm mt-1" />
                     </div>
 
-                    {/* Zone */}
                     <div>
                       <Field
                         name="zone"
@@ -364,40 +417,36 @@ const Allocation = ({  setOpen, vehicleData }) => {
                       <ErrorMessage name="zone" component="div" className="text-red-500 text-sm mt-1" />
                     </div>
 
-                    {/* Department */}
-                    {values.type === 'Department' && (<>
-                    <div>
-                      <Field
-                        name="department"
-                        as={Input}
-                        label="Department"
-                        size="lg"
-                        onChange={(e) => {
-                          setFieldValue('department', e.target.value.toUpperCase());
-                        }}
-                      />
-                      <ErrorMessage name="department" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
-</>)}
-                    {/* Office */}
+                    {values.type === 'Department' && (
+                      <div>
+                        <Field
+                          name="department"
+                          as={Input}
+                          label="Department"
+                          size="lg"
+                          onChange={(e) => {
+                            setFieldValue('department', e.target.value.toUpperCase());
+                          }}
+                        />
+                        <ErrorMessage name="department" component="div" className="text-red-500 text-sm mt-1" />
+                      </div>
+                    )}
 
-                    {values.type === 'Office' && (<>
-                    <div>
-                      <Field
-                        name="office"
-                        as={Input}
-                        label="Office"
-                        size="lg"
-                        onChange={(e) => {
-                          setFieldValue('office', e.target.value.toUpperCase());
-                        }}
-                      />
-                      <ErrorMessage name="office" component="div" className="text-red-500 text-sm mt-1" />
-                    </div>
-</>)}
+                    {values.type === 'Office' && (
+                      <div>
+                        <Field
+                          name="office"
+                          as={Input}
+                          label="Office"
+                          size="lg"
+                          onChange={(e) => {
+                            setFieldValue('office', e.target.value.toUpperCase());
+                          }}
+                        />
+                        <ErrorMessage name="office" component="div" className="text-red-500 text-sm mt-1" />
+                      </div>
+                    )}
 
-
-                    {/* Year of Allocation */}
                     <div>
                       <Field
                         name="yearOfAllocation"
@@ -407,6 +456,35 @@ const Allocation = ({  setOpen, vehicleData }) => {
                         label="Year of Allocation"
                       />
                       <ErrorMessage name="yearOfAllocation" component="div" className="text-red-500 text-sm mt-1" />
+                    </div>
+
+                    {/* File Upload Section */}
+                    <div className="lg:col-span-2">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <FaFileUpload className="inline mr-2" />
+                          Allocation Letter {!isEditMode && <span className="text-red-500">*</span>}
+                        </label>
+                        <input
+                          type="file"
+                          accept=".pdf"
+                          onChange={(e) => handleFileChange(e, setFieldValue)}
+                          className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+                        />
+                        {selectedAllocation?.filePath && !selectedFile && (
+                          <div className="mt-2 text-sm text-gray-600">
+                            <FaFileAlt className="inline mr-1" />
+                            Current file: {selectedAllocation.filePath.split('/').pop()}
+                            
+                          </div>
+                        )}
+                        {fileError && (
+                          <div className="text-red-500 text-sm mt-1">{fileError}</div>
+                        )}
+                        <p className="text-xs text-gray-500 mt-2">
+                          Accepted files: PDF (Max 5MB)
+                        </p>
+                      </div>
                     </div>
 
                     {/* Form Actions */}
@@ -476,6 +554,12 @@ const Allocation = ({  setOpen, vehicleData }) => {
                       </div>
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <FaFileAlt className="w-3 h-3" />
+                        Document
+                      </div>
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
                       Actions
                     </th>
                   </tr>
@@ -490,7 +574,7 @@ const Allocation = ({  setOpen, vehicleData }) => {
                         <Chip
                           value={allocation.type || 'N/A'}
                           size="sm"
-                          color={allocation.type === 'Permanent' ? 'blue' : allocation.type === 'Temporary' ? 'green' : 'orange'}
+                          color={allocation.type === 'Staff' ? 'blue' : allocation.type === 'Department' ? 'green' : allocation.type === 'Office' ? 'orange' : 'purple'}
                           className="w-fit"
                         />
                       </td>
@@ -499,6 +583,19 @@ const Allocation = ({  setOpen, vehicleData }) => {
                         {allocation.department || allocation.unit || allocation.office || 'N/A'}
                       </td>
                       <td className="px-4 py-3 text-sm">{allocation.yearOfAllocation || 'N/A'}</td>
+                      <td className="px-4 py-3 text-sm">
+                        {allocation.filePath ? (
+                          <button
+                            onClick={() => handleDownload(allocation.filePath, allocation.id)}
+                            className="text-teal-600 hover:text-teal-800"
+                            title="Download document"
+                          >
+                            <FaDownload className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <span className="text-gray-400">No file</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-sm">
                         <div className="flex gap-2">
                           <button

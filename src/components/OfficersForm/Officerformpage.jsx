@@ -107,6 +107,7 @@ const UserForm = ({ commands = [], factory = [], setOpen, userData = {}, isEdit 
     rank: userData.rank || '',
     fullname: userData.fullname || '',
     phone: userData.phone || '',
+    zone: userData.zone || '',
     command: userData.command || defaultCommand,
     email: userData.email || '',
     password: '',
@@ -152,7 +153,13 @@ const UserForm = ({ commands = [], factory = [], setOpen, userData = {}, isEdit 
       console.error('Error:', error);
     }
   };
-
+const zoneOptions = [
+    { value: "A", label: "Zone A" },
+    { value: "B", label: "Zone B" },
+    { value: "C", label: "Zone C" },
+    { value: "D", label: "Zone D" },
+    { value: "HQ", label: "Headquarters" },
+  ];
   const commandOptions = [
      { value: "ADAMAWA/TARABA", label: "ADAMAWA/TARABA" },
     { value: "APAPA", label: "APAPA" },
@@ -194,6 +201,8 @@ const UserForm = ({ commands = [], factory = [], setOpen, userData = {}, isEdit 
     { value: 'allocator', label: 'Vehicle Allocator' },
     
     { value: 'view', label: 'View Access' },
+    
+      { value: 'zone', label: 'Zonal Access' },
     
     { value: 'user', label: 'User Management' },
   ];
@@ -304,6 +313,17 @@ const UserForm = ({ commands = [], factory = [], setOpen, userData = {}, isEdit 
               <ErrorMessage name="command" component="div" className="text-red-500 text-sm" />
             </div>
 
+ <div>
+                <Field 
+                  name="zone" 
+                  component={SelectField} 
+                  options={zoneOptions} 
+                  placeholder="Select Zone" 
+                  label="Zone" 
+                  id="zone"
+                />
+                <ErrorMessage name="zone" component="div" className="text-red-500 text-sm" />
+              </div>  
             {/* Email Field */}
             <div>
               <Field

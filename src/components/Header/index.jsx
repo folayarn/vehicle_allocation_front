@@ -32,13 +32,18 @@ const Header = () => {
   return (
     <>
       <Navbar
-        blurred
+        color="black"
         shadow={false}
-        className="sticky bg-green-900 top-0 z-50 h-max max-w-full rounded-none border-0 p-2 md:p-4 shadow-md"
+        className="sticky bg-black top-0 z-50 h-max max-w-full rounded-none border-0 p-2 md:p-4"
       >
-        <div className="flex items-center justify-between text-blue-gray-900">
+        <div className="flex items-center justify-between text-white-900">
           {/* Logo and Sidebar Toggle */}
           <div className="flex items-center gap-2 md:gap-4">
+           <div>
+
+
+
+         
             <img 
               src={logo} 
               alt="logo" 
@@ -58,12 +63,12 @@ const Header = () => {
           <Tooltip content="VEHICLE ALLOCATION PORTAL" placement="bottom">
             <Typography 
               className="text-center text-sm md:text-xl font-bold text-white
-              truncate max-w-[120px] sm:max-w-[180px] md:max-w-none px-2"
+              truncate italic max-w-[120px] sm:max-w-[180px] md:max-w-none px-2"
             >
             {"VEHICLE ALLOCATION PORTAL"}
             </Typography>
           </Tooltip>
-
+  </div>
           {/* User Menu */}
           <div className="flex items-center gap-2 md:gap-4">
             <Menu placement="bottom-end">

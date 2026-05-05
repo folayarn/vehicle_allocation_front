@@ -8,6 +8,8 @@ import { act } from 'react';
 import { FetchServerTableThunk, FetchTableFilterOptionsThunk } from '../thunks/ServerTableThunk';
 import { GetSingleVehicleThunk } from '../thunks/VehicleThunk';
 import { FetchAllocationByVehicleThunk } from '../thunks/AllocationThunk';
+import { FetchDriversByVehicleThunk } from '../thunks/DriverThunk';
+import { FetchRemarksByVehicleThunk } from '../thunks/RemarkThunk';
 
 
 export const FetchSlice = createSlice({
@@ -122,6 +124,31 @@ builder
         
       });
 
+        builder
+      .addCase(FetchDriversByVehicleThunk.pending, (state) => {
+      
+        state.data=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchDriversByVehicleThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.data= action.payload;
+      })
+      .addCase(FetchDriversByVehicleThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
+
 builder
       .addCase(GetSingleVehicleThunk.pending, (state) => {
       
@@ -150,6 +177,31 @@ builder
 
      
      
+        builder
+      .addCase(FetchRemarksByVehicleThunk.pending, (state) => {
+      
+        state.data=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchRemarksByVehicleThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.data= action.payload;
+      })
+      .addCase(FetchRemarksByVehicleThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
+
      
      
 

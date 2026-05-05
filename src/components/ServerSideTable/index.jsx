@@ -297,7 +297,7 @@ const ServerSideTableComponent = ({
      
       
       return (
-        <tr key={key} {...rowProps} className="hover:bg-gray-50 transition-colors duration-150">
+        <tr key={key} {...rowProps} className='w-full'>
           {row.cells.map((cell, cellIndex) => {
             const { key: cellKey, ...cellProps } = cell.getCellProps();
             const cellId = `${key}-${cellIndex}`;
@@ -307,18 +307,18 @@ const ServerSideTableComponent = ({
                 key={cellKey}
                 {...cellProps}
                 className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-wrap text-left relative group"
-                onMouseEnter={() => setHoveredCell(cellId)}
-                onMouseLeave={() => setHoveredCell(null)}
+                // onMouseEnter={() => setHoveredCell(cellId)}
+                // onMouseLeave={() => setHoveredCell(null)}
               >
                 <div className="truncate max-w-xs">
                   {cell.render('Cell')}
                 </div>
                 
-                {hoveredCell === cellId && (
-                  <div className="absolute z-10 left-0 top-full mt-1 p-2 bg-gray-800 text-white text-xs rounded-md shadow-lg max-w-xs break-words whitespace-normal">
+                {/* {hoveredCell === cellId && (
+                  <div className="mt-1 p-2 bg-gray-800 text-white text-xs rounded-md shadow-lg max-w-xs break-words whitespace-normal">
                     {cell.render('Cell')}
                   </div>
-                )}
+                )} */}
               </td>
             );
           })}

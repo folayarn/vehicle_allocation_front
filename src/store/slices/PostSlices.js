@@ -4,6 +4,8 @@ import { GenerateOtpThunk, LoginThunk } from '../thunks/LoginThunk';
 import { CreateUserThunk, ResetPasswordThunk, UpdatePasswordThunk, UpdateUserThunk } from '../thunks/UserThunk';
 import { CreateVehicleThunk, DeleteVehicleThunk, UpdateVehicleThunk } from '../thunks/VehicleThunk';
 import { CreateAllocationThunk, DeleteAllocationThunk, UpdateAllocationThunk } from '../thunks/AllocationThunk';
+import { CreateDriverThunk, DeleteDriverThunk, UpdateDriverThunk } from '../thunks/DriverThunk';
+import { CreateRemarkThunk, DeleteRemarkThunk, UpdateRemarkThunk } from '../thunks/RemarkThunk';
 
 
 export const PostSlice = createSlice({
@@ -405,6 +407,185 @@ export const PostSlice = createSlice({
        
       })
       .addCase(UpdateAllocationThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+
+      
+        builder
+      .addCase(CreateDriverThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(CreateDriverThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(CreateDriverThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+      builder
+      .addCase(DeleteDriverThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(DeleteDriverThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+      })
+      .addCase(DeleteDriverThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+       builder
+      .addCase(UpdateDriverThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(UpdateDriverThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(UpdateDriverThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+     
+           builder
+      .addCase(CreateRemarkThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(CreateRemarkThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(CreateRemarkThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+      builder
+      .addCase(DeleteRemarkThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(DeleteRemarkThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+      })
+      .addCase(DeleteRemarkThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+       builder
+      .addCase(UpdateRemarkThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(UpdateRemarkThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(UpdateRemarkThunk.rejected, (state, action) => {
         
         state.loading = false;
         state.isError = true;

@@ -11,7 +11,8 @@ const base_url = "http://localhost:7119/api"
 export const Api = axios.create({
   baseURL: base_url,
   headers: {
-    'Content-Type': 'application/json',
+              'Content-Type': 'application/json',
+
   },
 });
 
@@ -179,15 +180,20 @@ export const getZones = () => {
 
 
 export const getVehicle = (params)=>{
-  return Api.get('/VehicleAssessment', { params });
+  return Api.get('VehicleAssessment/get-all/'+sessionStorage.getItem('e'), { params });
 }
 
 export const addVehicle = (data) => {
-  return Api.post('/VehicleAssessment', data);
+  return Api.post('/VehicleAssessment', data,{
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 }
 export const updateVehicle = (id,data) => {
-  console.log(id,data,"id and data in api update vehicle");
-  return Api.put(`/VehicleAssessment/${id}`, data);
+  return Api.put(`/VehicleAssessment/${id}`, data,{ headers: {
+      'Content-Type': 'multipart/form-data',
+    },});
 };
  export const getSingleVehicle = (id) => {
   return Api.get('/VehicleAssessment/' + id);
@@ -201,16 +207,66 @@ export const getByVehicleAllocation = (vehicle_id)=>{
 }
 
 export const postAllocation = (data) => {
-  return Api.post('/Allocation', data);
+  return Api.post('/Allocation', data,{
+     headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+  });
 }
 
 export const editAllocation = (id, data) => {
-  return Api.put(`/Allocation/${id}`, data);
+  return Api.put(`/Allocation/${id}`, data,{
+     headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+  });
 }
 export const deleteAllocationByVehicle = (id) => {
   return Api.delete(`/Allocation/${id}`);
 }
 
+export const getDriversByVehicle = (vehicle_id) => {
+  return Api.get(`/Drivers/vehicle/${vehicle_id}`);
+}
+export const addDriver = (data) => {
+  return Api.post('/Drivers', data);
+}
+export const updateDriver = (id, data) => {
+  return Api.put(`/Drivers/${id}`, data);
+}
+export const deleteDriver = (id) => {
+  return Api.delete(`/Drivers/${id}`);
+} 
+
+export const getDashboardSummary = (start,end) => {
+  const userId = sessionStorage.getItem('e');
+  return Api.get(`/VehicleAssessment/get-dash/${userId}`, {
+    params: {
+      startDate: selectedDate,
+      EndDate: selectedDate,
+    }
+  });
+};  
+
+export const getRemark=(vehicle_id)=>{
+    return Api.get(`/Remarks/vehicle/${vehicle_id}`);
+
+}
+
+export const addRemark=(data)=>{
+  return Api.post('/Remarks', data);
+
+}
+export const updateRemark = (id, data) => {
+  return Api.put(`/Remarks/${id}`, data);
+}
+export const deleteRemark = (id) => {
+  return Api.delete(`/Remarks/${id}`);
+} 
+
+export const getRemarksByVehicle = (vehicle_id) => {
+  return Api.get(`/Remarks/vehicle/${vehicle_id}`);
+}
 
 
 export default Api;

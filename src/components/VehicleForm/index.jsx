@@ -1,24 +1,22 @@
-import React from 'react';
-import { Card, Input, Button, Typography, Alert } from '@material-tailwind/react';
+import React, { useState } from 'react';
+import { Card, Input, Button, Typography, Alert, Spinner } from '@material-tailwind/react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { SelectField } from '../SelectionField';
 import { CreateVehicleThunk, UpdateVehicleThunk } from '../../store/thunks/VehicleThunk';
 import { FetchServerTableThunk } from '../../store/thunks/ServerTableThunk';
-// import { 
-//   CreateVehicleThunk, 
-//   UpdateVehicleThunk 
-// } from '../../store/thunks/VehicleThunk';
-
-// Custom Year Select Component
-
 
 const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.PostSlice);
-
-  
+  const [imagePreview, setImagePreview] = useState({
+    pictureA: vehicleData.pictureA || '',
+    pictureB: vehicleData.pictureB || '',
+    pictureC: vehicleData.pictureC || '',
+    pictureD: vehicleData.pictureD || '',
+    pictureE: vehicleData.pictureE || '',
+  });
 
   const validationSchema = Yup.object().shape({
     registrationNumber: Yup.string()
@@ -58,11 +56,11 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
     comments: Yup.string()
       .max(1000, 'Comments cannot exceed 1000 characters')
       .nullable(),
-    pictureA: Yup.string().url('Invalid URL format').nullable(),
-    pictureB: Yup.string().url('Invalid URL format').nullable(),
-    pictureC: Yup.string().url('Invalid URL format').nullable(),
-    pictureD: Yup.string().url('Invalid URL format').nullable(),
-    pictureE: Yup.string().url('Invalid URL format').nullable(),
+    pictureAFile: Yup.mixed().nullable(),
+    pictureBFile: Yup.mixed().nullable(),
+    pictureCFile: Yup.mixed().nullable(),
+    pictureDFile: Yup.mixed().nullable(),
+    pictureEFile: Yup.mixed().nullable(),
   });
 
   const initialValues = {
@@ -76,33 +74,86 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
     condition: vehicleData.condition || '',
     remark: vehicleData.remark || '',
     comments: vehicleData.comments || '',
-    pictureA: vehicleData.pictureA || '',
-    pictureB: vehicleData.pictureB || '',
-    pictureC: vehicleData.pictureC || '',
-    pictureD: vehicleData.pictureD || '',
-    pictureE: vehicleData.pictureE || '',
+    pictureAFile: null,
+    pictureBFile: null,
+    pictureCFile: null,
+    pictureDFile: null,
+    pictureEFile: null,
+  };
+
+  const handleFileChange = (event, setFieldValue, fieldName, previewField) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Invalid file type. Please upload JPEG, PNG, GIF, or WEBP images.');
+        return;
+      }
+      
+      // Validate file size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size too large. Maximum size is 5MB.');
+        return;
+      }
+      
+      setFieldValue(fieldName, file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(prev => ({
+          ...prev,
+          [previewField]: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (values, { resetForm, setSubmitting }) => {
     try {
-      // Clean up the data - remove empty strings
-      const submitData = Object.fromEntries(
-        Object.entries(values).filter(([_, value]) => value !== '' && value !== null)
-      );
+      const formData = new FormData();
+      
+      // Append all text fields
+      const textFields = [
+        'registrationNumber', 'chassisNumber', 'vehicleTypeModel', 
+        'engineNumber', 'vehicleLocation', 'command', 'zone', 
+        'condition', 'remark', 'comments'
+      ];
+      
+      textFields.forEach(field => {
+        if (values[field] && values[field].trim() !== '') {
+          formData.append(field, values[field]);
+        }
+      });
+      
+      // Append image files
+      const imageFields = ['pictureAFile', 'pictureBFile', 'pictureCFile', 'pictureDFile', 'pictureEFile'];
+      imageFields.forEach(field => {
+        if (values[field]) {
 
-     
-      if (isEdit && vehicleData.id) {  // Check submitData.id instead
-  await dispatch(UpdateVehicleThunk({ id: vehicleData.id, vehicleData: submitData })).unwrap();
-} else {
-  await dispatch(CreateVehicleThunk(submitData)).unwrap();
-}
-
+          formData.append(field, values[field]);
+        }
+      });
+      
+      console.log(formData.values()); // Example of accessing form data
+      if (isEdit && vehicleData.id) {
+        await dispatch(UpdateVehicleThunk({ 
+          id: vehicleData.id, 
+          vehicleData: formData 
+        })).unwrap();
+      } else {
+        await dispatch(CreateVehicleThunk(formData)).unwrap();
+      }
+      
       resetForm();
       setOpen(false);
-      dispatch(FetchServerTableThunk({ type: 'vehicle', pageIndex: 0, pageSize: 20 })); 
+      dispatch(FetchServerTableThunk({ type: 'vehicle', pageIndex: 0, pageSize: 20 }));
       
     } catch (error) {
       console.error('Error saving vehicle:', error);
+      alert(error.message || 'Error saving vehicle. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -111,7 +162,6 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
   const conditionOptions = [
     { value: 'SERVICEABLE', label: 'SERVICEABLE' },
     { value: 'UNSERVICEABLE', label: 'UNSERVICEABLE' }
-    
   ];
 
   const commandOptions = [
@@ -161,6 +211,12 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
       <Typography variant="h4" className="mb-6" color="blue-gray">
         {isEdit ? 'Edit Vehicle Information' : 'Add New Vehicle Information'}
       </Typography>
+      
+      {error && (
+        <Alert color="red" className="mb-4">
+          {error}
+        </Alert>
+      )}
         
       <Formik
         initialValues={initialValues}
@@ -199,8 +255,6 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
               />
               <ErrorMessage name="chassisNumber" component="div" className="text-red-500 text-sm mt-1" />
             </div>
-
-           
 
             {/* Vehicle Type/Model */}
             <div>
@@ -288,7 +342,7 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
             </div>
 
             {/* Remark */}
-            <div >
+            <div>
               <Field
                 name="remark"
                 as={Input}
@@ -301,9 +355,9 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
 
             {/* Comments */}
             <div className="lg:col-span-3">
-                <Typography variant="h6" className="mb-2" color="blue-gray">
-                  Additional Comments
-                </Typography>
+              <Typography variant="h6" className="mb-2" color="blue-gray">
+                Additional Comments
+              </Typography>
               <Field
                 name="comments"
                 as="textarea"
@@ -315,64 +369,231 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
               <ErrorMessage name="comments" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
-            {/* Picture Fields */}
+            {/* Picture Upload Fields */}
             <div className="lg:col-span-3">
               <Typography variant="h6" className="mb-2" color="blue-gray">
-                Vehicle Pictures (URLs)
+                Vehicle Pictures
               </Typography>
               <div className="grid lg:grid-cols-5 grid-cols-1 gap-4">
+                {/* Picture A */}
+
                 <div>
-                  <Field
-                    name="pictureA"
-                    as={Input}
-                    label="Picture A URL"
-                    id="pictureA"
-                    size="lg"
+                  <Typography variant="small" className="mb-1">Front Image</Typography>
+                  <input
+                    type="file"
+                    
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={(e) => handleFileChange(e, setFieldValue, 'pictureAFile', 'pictureA')}
+                    className="mb-2"
                   />
-                  <ErrorMessage name="pictureA" component="div" className="text-red-500 text-sm mt-1" />
+                  {imagePreview.pictureA && (
+                    <div className="mt-2">
+                      <img 
+                        src={imagePreview.pictureA} 
+                        alt="Preview A" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFieldValue('pictureAFile', null);
+                          setImagePreview(prev => ({ ...prev, pictureA: null }));
+                        }}
+                        className="text-red-500 text-xs mt-1"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                  <ErrorMessage name="pictureAFile" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
+
+                {/* Picture B */}
                 <div>
-                  <Field
-                    name="pictureB"
-                    as={Input}
-                    label="Picture B URL"
-                    id="pictureB"
-                    size="lg"
+                  <Typography variant="small" className="mb-1">Rear Image</Typography>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={(e) => handleFileChange(e, setFieldValue, 'pictureBFile', 'pictureB')}
+                    className="mb-2"
                   />
-                  <ErrorMessage name="pictureB" component="div" className="text-red-500 text-sm mt-1" />
+                  {imagePreview.pictureB && (
+                    <div className="mt-2">
+                      <img 
+                        src={imagePreview.pictureB} 
+                        alt="Preview B" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFieldValue('pictureBFile', null);
+                          setImagePreview(prev => ({ ...prev, pictureB: null }));
+                        }}
+                        className="text-red-500 text-xs mt-1"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                  <ErrorMessage name="pictureBFile" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
+
+                {/* Picture C */}
                 <div>
-                  <Field
-                    name="pictureC"
-                    as={Input}
-                    label="Picture C URL"
-                    id="pictureC"
-                    size="lg"
+                  <Typography variant="small" className="mb-1">Side 1 Image</Typography>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={(e) => handleFileChange(e, setFieldValue, 'pictureCFile', 'pictureC')}
+                    className="mb-2"
                   />
-                  <ErrorMessage name="pictureC" component="div" className="text-red-500 text-sm mt-1" />
+                  {imagePreview.pictureC && (
+                    <div className="mt-2">
+                      <img 
+                        src={imagePreview.pictureC} 
+                        alt="Preview C" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFieldValue('pictureCFile', null);
+                          setImagePreview(prev => ({ ...prev, pictureC: null }));
+                        }}
+                        className="text-red-500 text-xs mt-1"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                  <ErrorMessage name="pictureCFile" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
+
+                {/* Picture D */}
                 <div>
-                  <Field
-                    name="pictureD"
-                    as={Input}
-                    label="Picture D URL"
-                    id="pictureD"
-                    size="lg"
+                  <Typography variant="small" className="mb-1">Interior Image</Typography>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={(e) => handleFileChange(e, setFieldValue, 'pictureDFile', 'pictureD')}
+                    className="mb-2"
                   />
-                  <ErrorMessage name="pictureD" component="div" className="text-red-500 text-sm mt-1" />
+                  {imagePreview.pictureD && (
+                    <div className="mt-2">
+                      <img 
+                        src={imagePreview.pictureD} 
+                        alt="Preview D" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFieldValue('pictureDFile', null);
+                          setImagePreview(prev => ({ ...prev, pictureD: null }));
+                        }}
+                        className="text-red-500 text-xs mt-1"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                  <ErrorMessage name="pictureDFile" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
+
+                {/* Picture E */}
                 <div>
-                  <Field
-                    name="pictureE"
-                    as={Input}
-                    label="Picture E URL"
-                    id="pictureE"
-                    size="lg"
+                  <Typography variant="small" className="mb-1">Side 2 Image</Typography>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={(e) => handleFileChange(e, setFieldValue, 'pictureEFile', 'pictureE')}
+                    className="mb-2"
                   />
-                  <ErrorMessage name="pictureE" component="div" className="text-red-500 text-sm mt-1" />
+                  {imagePreview.pictureE && (
+                    <div className="mt-2">
+                      <img 
+                        src={imagePreview.pictureE} 
+                        alt="Preview E" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFieldValue('pictureEFile', null);
+                          setImagePreview(prev => ({ ...prev, pictureE: null }));
+                        }}
+                        className="text-red-500 text-xs mt-1"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                  <ErrorMessage name="pictureEFile" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
               </div>
             </div>
+
+            {/* Existing Images Preview (for edit mode) */}
+            {isEdit && (vehicleData.pictureA || vehicleData.pictureB || vehicleData.pictureC || vehicleData.pictureD || vehicleData.pictureE) && (
+              <div className="lg:col-span-3">
+                <Typography variant="h6" className="mb-2" color="blue-gray">
+                  Existing Images
+                </Typography>
+                <div className="grid lg:grid-cols-5 grid-cols-1 gap-4">
+                  {vehicleData.pictureA && (
+                    <div>
+                      <img 
+                        src={`http://localhost:5000/${vehicleData.pictureA}`} 
+                        alt="Existing A" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <Typography variant="small" className="text-center mt-1">Picture A</Typography>
+                    </div>
+                  )}
+                  {vehicleData.pictureB && (
+                    <div>
+                      <img 
+                        src={`http://localhost:5000/${vehicleData.pictureB}`} 
+                        alt="Existing B" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <Typography variant="small" className="text-center mt-1">Picture B</Typography>
+                    </div>
+                  )}
+                  {vehicleData.pictureC && (
+                    <div>
+                      <img 
+                        src={`http://localhost:5000/${vehicleData.pictureC}`} 
+                        alt="Existing C" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <Typography variant="small" className="text-center mt-1">Picture C</Typography>
+                    </div>
+                  )}
+                  {vehicleData.pictureD && (
+                    <div>
+                      <img 
+                        src={`http://localhost:5000/${vehicleData.pictureD}`} 
+                        alt="Existing D" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <Typography variant="small" className="text-center mt-1">Picture D</Typography>
+                    </div>
+                  )}
+                  {vehicleData.pictureE && (
+                    <div>
+                      <img 
+                        src={`http://localhost:5000/${vehicleData.pictureE}`} 
+                        alt="Existing E" 
+                        className="w-full h-24 object-cover rounded-md"
+                      />
+                      <Typography variant="small" className="text-center mt-1">Picture E</Typography>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Submit and Cancel Buttons */}
             <div className="lg:col-span-3 flex gap-4 mt-4">
@@ -382,7 +603,12 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
                 size="lg"
                 disabled={isSubmitting || loading}
               >
-                {isSubmitting || loading ? 'Processing...' : (isEdit ? 'Update Vehicle' : 'Create Vehicle')}
+                {isSubmitting || loading ? (
+                  <div className="flex items-center gap-2">
+                    <Spinner className="h-4 w-4" />
+                    Processing...
+                  </div>
+                ) : (isEdit ? 'Update Vehicle' : 'Create Vehicle')}
               </Button>
               <Button 
                 type="button" 

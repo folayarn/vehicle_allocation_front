@@ -158,15 +158,12 @@ const EditUserForm = ({ commands, factory, setOpen, userData = {}, isEdit }) => 
   }));
 
   const accessLevelOptions = [
-    { value: 'cpc', label: 'CPC' },
-    { value: 'officer', label: 'Factory Officer' },
-    { value: 'view', label: 'View Access For excise Trader' },
-    { value: 'super', label: 'view Access For Parent Factory' },
-    { value: 'all', label: 'View Access' },
-    { value: 'cac', label: 'View Access For CAC' },
-    { value: 'semi', label: 'View Access For Multiple factories' },
-    { value: 'oc_excise', label: 'View Access For OC Excise' },
-    { value: 'ftz', label: 'View Access For FTZ Operator' },
+    { value: 'allocator', label: 'Vehicle Allocator' },
+    
+    { value: 'view', label: 'View Access' },
+    
+      { value: 'zone', label: 'Zonal Access' },
+    
     { value: 'user', label: 'User Management' },
   ];
 

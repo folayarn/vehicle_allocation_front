@@ -47,20 +47,20 @@ const Sidebar = ({ routes }) => {
   };
 
   return (
-    <aside className={`fixed xl:relative h-full z-20 w-72 bg-white shadow-xl border-r border-gray-100 transition-all duration-300 ${openSidenav ? "translate-x-0" : "-translate-x-full xl:translate-x-0"}`}>
+    <aside className={`fixed xl:relative h-full z-20 w-72 bg-black text-white shadow-xl border-r border-gray-100 transition-all duration-300 ${openSidenav ? "translate-x-0" : "-translate-x-full xl:translate-x-0"}`}>
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-gray-50 to-white">
-        <Typography variant="h5" color="blue-gray" className="font-bold flex items-center gap-2">
+      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-black">
+        <Typography variant="h5" color="white" className="font-bold flex items-center gap-2">
           Menu
        <span className="group relative inline-flex">
   {/* Truncated Badge */}
   <span className="text-xs font-normal bg-blue-gray-100 text-blue-gray-700 px-2 py-1 rounded-full flex items-center gap-1 max-w-[150px] truncate">
     {roleIcons[role.toLowerCase()] || roleIcons.officer}
     <span className="truncate">
-      {role === "admin" ? "Admin" : role === "user" ? "User Management" : role === "oc_excise" || role === "cac" ? "View Access (Command)" : 
-      role === "allocator" ? "Allocation Officer" : role == "all"? "View Access" :
-      role == "view" ? "View Access":
-       role == "super" ? `${user?.factory} (Parent Factory)` : `${user?.factory}`}
+      {role === "admin" ? "ADMIN" : role === "user" ? "USER MANAGEMENT" : role === "oc_excise" || role === "cac" ? "View Access (Command)" : 
+      role === "allocator" ? "ALLOCATION OFFICER" : role == "all"? "VIEW ACCESS" :
+      role == "view" ? "VIEW ACCESS":
+       role == "zone" ? `ZONAL ACCESS` : `${user?.factory}`}
     </span>
   </span>
   
@@ -92,7 +92,7 @@ const Sidebar = ({ routes }) => {
                 <li className="px-3 py-2">
                   <Typography
                     variant="small"
-                    color="gray"
+                    color="white"
                     className="font-bold uppercase text-xs tracking-wider flex items-center gap-2"
                   >
                     {title}
@@ -108,7 +108,7 @@ const Sidebar = ({ routes }) => {
                           <motion.div whileHover={{ scale: 1.02 }}>
                             <Button
                               variant={isActive ? "gradient" : "text"}
-                              color={isActive ? sidenavColor : "gray"}
+                              color={isActive ? sidenavColor : "white"}
                               className={`flex items-center gap-3 px-4 py-3 rounded-lg w-full transition-colors ${
                                 isActive 
                                   ? "shadow-md" 
@@ -119,7 +119,7 @@ const Sidebar = ({ routes }) => {
                               <span className="w-5 h-5 flex items-center justify-center">
                                 {React.cloneElement(icon, {
                                   className: `w-5 h-5 ${
-                                    isActive ? "text-white" : "text-gray-600"
+                                    isActive ? "text-white" : "text-white"
                                   }`
                                 })}
                               </span>
