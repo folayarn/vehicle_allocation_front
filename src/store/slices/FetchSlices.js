@@ -10,6 +10,9 @@ import { GetSingleVehicleThunk } from '../thunks/VehicleThunk';
 import { FetchAllocationByVehicleThunk } from '../thunks/AllocationThunk';
 import { FetchDriversByVehicleThunk } from '../thunks/DriverThunk';
 import { FetchRemarksByVehicleThunk } from '../thunks/RemarkThunk';
+import { FetchLogBooksByVehicleThunk } from '../thunks/LogBookThunk';
+import { FetchIncidentReportsByVehicleThunk } from '../thunks/IncidentReportThunk';
+import { FetchMaintenancesByVehicleThunk } from '../thunks/MaintenanceThunk';
 
 
 export const FetchSlice = createSlice({
@@ -203,7 +206,79 @@ builder
       });
 
      
-     
+      builder
+      .addCase(FetchMaintenancesByVehicleThunk.pending, (state) => {
+      
+        state.data=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchMaintenancesByVehicleThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.data= action.payload;
+      })
+      .addCase(FetchMaintenancesByVehicleThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
+ builder
+      .addCase(FetchIncidentReportsByVehicleThunk.pending, (state) => {
+      
+        state.data=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchIncidentReportsByVehicleThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.data= action.payload;
+      })
+      .addCase(FetchIncidentReportsByVehicleThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
+ builder
+      .addCase(FetchLogBooksByVehicleThunk.pending, (state) => {
+      
+        state.data=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchLogBooksByVehicleThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.data= action.payload;
+      })
+      .addCase(FetchLogBooksByVehicleThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
+
 
 
 

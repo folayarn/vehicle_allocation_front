@@ -6,6 +6,9 @@ import { CreateVehicleThunk, DeleteVehicleThunk, UpdateVehicleThunk } from '../t
 import { CreateAllocationThunk, DeleteAllocationThunk, UpdateAllocationThunk } from '../thunks/AllocationThunk';
 import { CreateDriverThunk, DeleteDriverThunk, UpdateDriverThunk } from '../thunks/DriverThunk';
 import { CreateRemarkThunk, DeleteRemarkThunk, UpdateRemarkThunk } from '../thunks/RemarkThunk';
+import { ApproveLogBookThunk, CreateLogBookThunk, DeleteLogBookThunk, RejectLogBookThunk, UpdateLogBookThunk } from '../thunks/LogBookThunk';
+import { CreateIncidentReportThunk, DeleteIncidentReportThunk, UpdateIncidentReportThunk } from '../thunks/IncidentReportThunk';
+import { CreateMaintenanceThunk, DeleteMaintenanceThunk, UpdateMaintenanceThunk } from '../thunks/MaintenanceThunk';
 
 
 export const PostSlice = createSlice({
@@ -596,6 +599,332 @@ export const PostSlice = createSlice({
       });
 
      
+      
+           builder
+      .addCase(CreateLogBookThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(CreateLogBookThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(CreateLogBookThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+      builder
+      .addCase(DeleteLogBookThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(DeleteLogBookThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+      })
+      .addCase(DeleteLogBookThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+       builder
+      .addCase(UpdateLogBookThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(UpdateLogBookThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(UpdateLogBookThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+
+      
+           builder
+      .addCase(CreateMaintenanceThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(CreateMaintenanceThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(CreateMaintenanceThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+      builder
+      .addCase(DeleteMaintenanceThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(DeleteMaintenanceThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+      })
+      .addCase(DeleteMaintenanceThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+       builder
+      .addCase(UpdateMaintenanceThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(UpdateMaintenanceThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(UpdateMaintenanceThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+           builder
+      .addCase(CreateIncidentReportThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(CreateIncidentReportThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(CreateIncidentReportThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+      builder
+      .addCase(DeleteIncidentReportThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(DeleteIncidentReportThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+      })
+      .addCase(DeleteIncidentReportThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+       builder
+      .addCase(UpdateIncidentReportThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(UpdateIncidentReportThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(UpdateIncidentReportThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+       builder
+      .addCase(ApproveLogBookThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(ApproveLogBookThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(ApproveLogBookThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+ builder
+      .addCase(RejectLogBookThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(RejectLogBookThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(RejectLogBookThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
   },
 });
 

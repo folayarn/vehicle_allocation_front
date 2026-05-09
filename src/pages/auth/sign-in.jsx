@@ -108,8 +108,8 @@ export function SignIn() {
                                 <div className="flex items-center gap-3 mb-6">
                                 </div>
                                 <h1 className="text-5xl font-bold mb-4 leading-tight text-white">
-                                    Vehicle Allocation
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500"> Portal</span>
+                                    NCS FLEET MANAGEMENT
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-blue-500"> SYSTEM</span>
                                 </h1>
                             </motion.div>
                             
@@ -423,7 +423,7 @@ export function SignIn() {
                                 className="mt-8 text-center"
                             >
                                 <Typography variant="small" className="text-white/90 font-medium">
-                                    © {new Date().getFullYear()} Nigeria Customs Service - Vehicle Allocation Portal. All rights reserved.
+                                    © {new Date().getFullYear()} Nigeria Customs Service - Fleet Management System. All rights reserved.
                                 </Typography>
                             </motion.div>
                         </motion.div>

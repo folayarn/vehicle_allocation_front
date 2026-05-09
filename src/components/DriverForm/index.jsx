@@ -85,6 +85,7 @@ const DriverForm = ({ setOpen, vehicleData }) => {
       const submitData = {
         ...values,
         vehicleId: vehicleId,
+        UserId:sessionStorage.getItem("e"),
         chassisNumber: vehicleData?.chassisNumber || '',
       };
 

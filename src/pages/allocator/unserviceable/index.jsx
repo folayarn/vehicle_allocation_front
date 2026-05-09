@@ -23,7 +23,7 @@ import { GiSteeringWheel } from "react-icons/gi";
 import DriverForm from "../../../components/DriverForm";
 import { FetchDriversByVehicleThunk } from "../../../store/thunks/DriverThunk";
 
- const AllocationPage = () => {
+ const UnserviceableAllocationPage = () => {
   const [open, setOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [openView, setOpenView] = useState(false);
@@ -45,31 +45,6 @@ import { FetchDriversByVehicleThunk } from "../../../store/thunks/DriverThunk";
  const [dateRange, setDateRange] = useState({ start: '', end: '' });
   
  
-  
-
-  const handleDelete = (id) => {
-    if(confirm("Are you sure you want to delete this Vehicle?")){
-     dispatch(DeleteVehicleThunk(id)).then(() => {
-
-      dispatch(FetchServerTableThunk({ type: 'vehicle', pageIndex: 0, pageSize: 20 })); 
-     });
-    }
-}   
-const handleOpenAllocation = (row) => {
-    dispatch(FetchAllocationByVehicleThunk(row.original.id)).then(() => {    
-   setSingle(row.original)
-      setOpenAllocation(true);
-    });
-  }
-
-  const handleOpenDriverForm = (row) => {
-    dispatch(FetchDriversByVehicleThunk(row.original.id)).then(() => {    
-   setSingle(row.original)
-      setShowDrivers(true);
-    });
-  }
-  
-
     const handleOpenView = (row) =>{
      dispatch(GetSingleVehicleThunk(row.original.id)).then(() => {    
     setOpenView(true)
@@ -116,19 +91,7 @@ const handleOpenAllocation = (row) => {
     ),
   },
   
-  {    Header: "Actions",
-    Cell: ({ row }) => (
-      <div className="flex space-x-2 w-full justify-start">
-         <Button size="sm" color="green" onClick={() => handleOpenAllocation(row)}>
-            Allocate
-            </Button>
-
-             <Button size="sm" color="blue" onClick={() => handleOpenDriverForm(row)}>
-            add Driver
-            </Button>
-            </div>
-    )
-  },
+ 
   {
     Header: "More Actions",
     Cell: ({ row }) => (
@@ -136,19 +99,13 @@ const handleOpenAllocation = (row) => {
         <Button size="sm" color="gray" onClick={() => handleOpenView(row)}>
             <FaEye /> 
         </Button>
-        <Button size="sm" color="blue" onClick={() => handleOpenEdit(row)}>
-          <FaPencilAlt /> 
-        </Button>
-       {role =="admin" && (
-<Button size="sm" color="red" onClick={() => handleDelete(row.original.id)}>
-          <FaTrash /> 
-        </Button>
+       </div>
        )}
         
 
-        </div>
-    ),
-  },
+       
+    
+  
       
     ];
 
@@ -172,12 +129,11 @@ const handleOpenAllocation = (row) => {
     <>
     <Card className="ml-auto border w-full overflow-x-auto  border-blue-gray-100 shadow-sm p-10 h-fit">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Vehicle Allocation Records</h2>
-        <Button className="bg-green-500" onClick={handleOpen}>+ Add New Vehicle</Button>  
+        <h2 className="text-2xl font-bold">Unserviceable Vehicle Allocation Records</h2>
       </div>
 
                              <ServerSideTableComponent
-                               type={"vehicle"}
+                               type={"unservice"}
                                columns={vehicleColumns}
                                serverSideFiltering={isServerSide}
                                serverSideSorting={isServerSide}
@@ -191,24 +147,16 @@ const handleOpenAllocation = (row) => {
                              />
                            
     </Card>
-    <ModalComponent size={"xl"} open={open} setOpen={setOpen} title="Enter Vehicle Details">
-      <VehicleForm  setOpen={setOpen} />
-    </ModalComponent>
-    <ModalComponent size={"xl"} open={showEdit} setOpen={setShowEdit} title="Edit Vehicle">
-      <VehicleForm isEdit = {true} setOpen={setShowEdit}  vehicleData={singleData} />
-    </ModalComponent>
+   
+   
 
  <ModalComponent size={"xl"} open={openView} setOpen={setOpenView} title="View Vehicle">
     <ViewVehicle vehicleData={singleData} setOpen={setOpenView}/>
     </ModalComponent>
-    <ModalComponent size={"xl"} open={openAllocation} setOpen={setOpenAllocation} title="Allocate Vehicle">
-      <Allocation  setOpen={setOpenAllocation} vehicleData={single}/>
-    </ModalComponent>
+   
 
-    <ModalComponent size={"xl"} open={showDrivers} setOpen={setShowDrivers} title="Add Driver">
-      <DriverForm setOpen={setShowDrivers} vehicleData={single}/>
-    </ModalComponent>
+   
  </> );
 };
 
-export default AllocationPage
+export default UnserviceableAllocationPage

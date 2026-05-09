@@ -8,6 +8,10 @@ import OfficerPage from "../pages/admin/officers";
 import { FaBookOpen, FaLaptop, FaRadio } from "react-icons/fa6";
 import AllocationPage from "../pages/allocator/allocationPage";
 import ViewAllocationPage from "../pages/view";
+import DriverPage from "../pages/driver";
+import MaintenancePage from "../pages/Maintenance";
+import IncidentReportPage from "../pages/IncidentReport";
+import UnserviceableAllocationPage from "../pages/allocator/unserviceable";
 
 
 
@@ -50,7 +54,37 @@ export const routes = [
         icon: <FaHome size={20} />,
         name: "dashboard",
         path: "/",
+        role: "driver",
+        element: <AdminDasboard/>
+      },
+       {
+        icon: <FaHome size={20} />,
+        name: "dashboard",
+        path: "/",
+        role: "chief_driver_com",
+        element: <AdminDasboard/>
+      },
+       {
+        icon: <FaHome size={20} />,
+        name: "dashboard",
+        path: "/",
         role: "allocator",
+        element: <AdminDasboard/>
+      },
+
+
+      {
+        icon: <FaHome size={20} />,
+        name: "dashboard",
+        path: "/",
+        role: "mechanic",
+        element: <AdminDasboard/>
+      },
+       {
+        icon: <FaHome size={20} />,
+        name: "dashboard",
+        path: "/",
+        role: "transport",
         element: <AdminDasboard/>
       },
  {       icon: <FaHome size={20} />,
@@ -59,13 +93,49 @@ export const routes = [
         role: "allocator",
         element: <AllocationPage/>,
     },
+
+    {       icon: <FaHome size={20} />,
+        name: "Unserviceable Vehicles",
+        path: "/unservice",
+        role: "allocator",
+        element: <UnserviceableAllocationPage/>,
+    },
+ 
+    {       icon: <FaHome size={20} />,
+        name: "Available Vehicles",
+        path: "/vehicles",
+        role: "mechanic",
+        element: <MaintenancePage/>,
+    },
+     {       icon: <FaHome size={20} />,
+        name: "Available Vehicles",
+        path: "/vehicles",
+        role: "transport",
+        element: <IncidentReportPage/>,
+    },
     {       icon: <FaHome size={20} />,
         name: "Allocations",
         path: "/allocations",
         role: "view",
         element: <ViewAllocationPage/>,
     },
-
+    {       icon: <FaHome size={20} />,
+        name: "Vehicle Record",
+        path: "/vehicle",
+        role: "driver",
+        element: <DriverPage/>,
+    },
+{       icon: <FaHome size={20} />,
+        name: "Vehicle Record",
+        path: "/vehicle",
+        role: "chief_driver_com",
+        element: <DriverPage/>,
+    },{       icon: <FaHome size={20} />,
+        name: "Vehicle Record",
+        path: "/vehicle",
+        role: "chief_driver_hq",
+        element: <DriverPage/>,
+    },
     {       icon: <FaHome size={20} />,
         name: "Allocations",
         path: "/allocations",
@@ -77,6 +147,12 @@ export const routes = [
         path: "/allocations",
         role: "admin",
         element: <AllocationPage/>,
+    },
+    {       icon: <FaHome size={20} />,
+        name: "Unserviceable Vehicles",
+        path: "/unservice",
+        role: "admin",
+        element: <UnserviceableAllocationPage/>,
     },
       {
         icon: <FaUserAlt size={20} />,

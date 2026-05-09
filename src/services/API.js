@@ -52,7 +52,7 @@ const refreshAccessToken = async () => {
     return accessToken;
   } catch (error) {
     sessionStorage.clear()
-    location.href = '/';
+location.href = '/';
     return Promise.reject(error);
   }
 };
@@ -183,6 +183,9 @@ export const getVehicle = (params)=>{
   return Api.get('VehicleAssessment/get-all/'+sessionStorage.getItem('e'), { params });
 }
 
+export const getUnserviceableVehicle = (params)=>{
+  return Api.get('VehicleAssessment/get-all/unserviceable/'+sessionStorage.getItem('e'), { params });
+}
 export const addVehicle = (data) => {
   return Api.post('/VehicleAssessment', data,{
     headers: {
@@ -266,6 +269,80 @@ export const deleteRemark = (id) => {
 
 export const getRemarksByVehicle = (vehicle_id) => {
   return Api.get(`/Remarks/vehicle/${vehicle_id}`);
+}
+
+export const getMaintenance=(vehicle_id)=>{
+    return Api.get(`/MaintenanceReport/vehicle/${vehicle_id}`);
+
+}
+
+export const addMaintenance=(data)=>{
+  return Api.post('/MaintenanceReport', data);
+
+}
+export const updateMaintenance = (id, data) => {
+  return Api.put(`/MaintenanceReport/${id}`, data);
+}
+export const deleteMaintenance = (id) => {
+  return Api.delete(`/MaintenanceReport/${id}`);
+} 
+
+export const getMaintenanceByVehicle = (vehicle_id) => {
+  return Api.get(`/MaintenanceReport/vehicle/${vehicle_id}`);
+}
+
+export const getIncidentReport=(vehicle_id)=>{
+    return Api.get(`/IncidentReport/vehicle/${vehicle_id}`);
+
+}
+
+export const addIncidentReport =(data)=>{
+  return Api.post('/IncidentReport', data,
+    {
+     headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+  }
+  );
+
+}
+export const updateIncidentReport = (id, data) => {
+  return Api.put(`/IncidentReport/${id}`, data);
+}
+export const deleteIncidentReport = (id) => {
+  return Api.delete(`/IncidentReport/${id}`);
+} 
+
+export const getIncidentReportByVehicle = (vehicle_id) => {
+  return Api.get(`/IncidentReport/vehicle/${vehicle_id}`);
+}
+
+export const getLogBook=(vehicle_id)=>{
+    return Api.get(`/LogBook/vehicle/${vehicle_id}`);
+
+}
+
+
+export const addLogBook =(data)=>{
+  return Api.post('/LogBook', data);
+
+}
+export const updateLogBook = (id, data) => {
+  return Api.put(`/LogBook/${id}`, data);
+}
+export const deleteLogBook = (id) => {
+  return Api.delete(`/LogBook/${id}`);
+} 
+
+export const getLogBookByVehicle = (vehicle_id) => {
+  return Api.get(`/LogBook/vehicle/${vehicle_id}`);
+}
+
+export const approveLogBook = (id) => {
+  return Api.post(`/LogBook/approve/${id}`);
+}
+export const rejectLogBook = (id,reason) => {
+  return Api.post(`/LogBook/reject/${id}`,{Reason: reason});
 }
 
 

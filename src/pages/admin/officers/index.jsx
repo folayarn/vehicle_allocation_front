@@ -166,7 +166,7 @@ import ServerSideTableComponent from "../../../components/ServerSideTable";
   };
 
   const handleOpenEdit = (row) => {
-   
+   setUserData(row)
     setShowEdit(true)
      
   }
@@ -201,7 +201,7 @@ import ServerSideTableComponent from "../../../components/ServerSideTable";
       <UserForm factory={factorys} commands={commands} setOpen={setOpen} />
     </ModalComponent>
     <ModalComponent size={"xl"} open={showEdit} setOpen={setShowEdit} title="Edit User">
-      <EditUserForm factory={factorys} isEdit = {true} setOpen={setShowEdit} commands={commands} userData={userData} />
+      <UserForm isEdit={true} setOpen={setShowEdit} userData={userData} />
     </ModalComponent>
 
     <ModalComponent size={"sm"} open={openReset} setOpen={setOpenReset} title="Reset Password">

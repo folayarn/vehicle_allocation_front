@@ -66,7 +66,7 @@ const Allocation = ({ setOpen, vehicleData }) => {
       .nullable(),
     type: Yup.string()
       .required('Allocation type is required')
-      .oneOf(['Department', 'Staff', 'Office'], 'Invalid allocation type'),
+      .oneOf(['Department', 'Staff', 'Office','Auction'], 'Invalid allocation type'),
     command: Yup.string()
       .max(100, 'Command cannot exceed 100 characters')
       .transform((value) => value?.toUpperCase())
@@ -153,6 +153,7 @@ const Allocation = ({ setOpen, vehicleData }) => {
       formData.append('Department', values.department || '');
       formData.append('Office', values.office || '');
       formData.append('Unit', values.unit || '');
+      formData.append('UserId',sessionStorage.getItem('e'))
       formData.append('YearOfAllocation', values.yearOfAllocation);
       
       // Append file if selected
@@ -215,7 +216,7 @@ const Allocation = ({ setOpen, vehicleData }) => {
     { value: 'Staff', label: 'Allocation to Staff' },
     { value: 'Office', label: 'Allocation to Office' },
     { value: 'Department', label: 'Allocation to Department' },
-    { value: 'Auction', label: 'Allocation Through Auction' },
+    { value: 'Auction', label: 'Onboarding to Auction' },
   ];
 
   const rankOptions = [

@@ -60,12 +60,12 @@ const Header = () => {
           </div>
 
           {/* System Title with Responsive Truncation */}
-          <Tooltip content="VEHICLE ALLOCATION PORTAL" placement="bottom">
+          <Tooltip content="NCS FLEET MANAGEMENT SYSTEM" placement="bottom">
             <Typography 
               className="text-center text-sm md:text-xl font-bold text-white
               truncate italic max-w-[120px] sm:max-w-[180px] md:max-w-none px-2"
             >
-            {"VEHICLE ALLOCATION PORTAL"}
+            {"NCS FLEET MANAGEMENT SYSTEM"}
             </Typography>
           </Tooltip>
   </div>

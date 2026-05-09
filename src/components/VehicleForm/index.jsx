@@ -137,7 +137,6 @@ const VehicleForm = ({ setOpen, vehicleData = {}, isEdit }) => {
         }
       });
       
-      console.log(formData.values()); // Example of accessing form data
       if (isEdit && vehicleData.id) {
         await dispatch(UpdateVehicleThunk({ 
           id: vehicleData.id, 
