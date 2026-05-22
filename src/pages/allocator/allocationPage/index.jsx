@@ -22,6 +22,8 @@ import { FetchAllocationByVehicleThunk } from "../../../store/thunks/AllocationT
 import { GiSteeringWheel } from "react-icons/gi";
 import DriverForm from "../../../components/DriverForm";
 import { FetchDriversByVehicleThunk } from "../../../store/thunks/DriverThunk";
+import { FetchMaintenanceRequestByVehicleThunk } from "../../../store/thunks/MaintenanceRequestThunk";
+import MaintenanceRequestForm from "../../../components/MaintenanceRequest";
 
  const AllocationPage = () => {
   const [open, setOpen] = useState(false);
@@ -44,7 +46,8 @@ import { FetchDriversByVehicleThunk } from "../../../store/thunks/DriverThunk";
   const [searchTerm, setSearchTerm] = useState('');
  const [dateRange, setDateRange] = useState({ start: '', end: '' });
   
- 
+  const [openMain,setOpenMain]=useState(false)
+
   
 
   const handleDelete = (id) => {
@@ -94,19 +97,19 @@ const handleOpenAllocation = (row) => {
     accessor: "command",
     Cell: ({ row }) => <div>{row.original.command || "N/A"}</div>,
   },
-  {
-    Header: "Condition",
-    accessor: "condition",
-    Cell: ({ row }) => {
-      const condition = row.original.condition;
-      let colorClass = "text-gray-600";
-      if (condition === "SERVICEABLE") colorClass = "text-green-600 font-semibold";
-      if (condition === "UNSERVICEABLE") colorClass = "text-red-600";
+  // {
+  //   Header: "Condition",
+  //   accessor: "condition",
+  //   Cell: ({ row }) => {
+  //     const condition = row.original.condition;
+  //     let colorClass = "text-gray-600";
+  //     if (condition === "SERVICEABLE") colorClass = "text-green-600 font-semibold";
+  //     if (condition === "UNSERVICEABLE") colorClass = "text-red-600";
       
       
-      return <div className={colorClass}>{condition || "N/A"}</div>;
-    },
-  },
+  //     return <div className={colorClass}>{condition || "N/A"}</div>;
+  //   },
+  // },
   
   {
     Header: "Date",
@@ -116,13 +119,24 @@ const handleOpenAllocation = (row) => {
     ),
   },
   
+  {    Header: "Action",
+    Cell: ({ row }) => (
+      <div className="flex space-x-2 w-full justify-start">
+        
+ <Button size="sm" color="orange" onClick={() => handleOpenMain(row)}>
+           {"Check Maintenace Request"} 
+        </Button>
+
+            </div>
+    )
+  },
   {    Header: "Actions",
     Cell: ({ row }) => (
       <div className="flex space-x-2 w-full justify-start">
          <Button size="sm" color="green" onClick={() => handleOpenAllocation(row)}>
             Allocate
             </Button>
-
+ 
              <Button size="sm" color="blue" onClick={() => handleOpenDriverForm(row)}>
             add Driver
             </Button>
@@ -166,17 +180,25 @@ const handleOpenAllocation = (row) => {
    });
   }
 
+   const handleOpenMain = (row) =>{
+       dispatch(FetchMaintenanceRequestByVehicleThunk(row.original.id)).then(() => {  
+        setSingle(row.original)  
+      setOpenMain(true)
+     });
+    };
+
 
 
   return (
     <>
-    <Card className="ml-auto border w-full overflow-x-auto  border-blue-gray-100 shadow-sm p-10 h-fit">
+    <Card className="ml-auto border  border-blue-gray-100 shadow-sm p-10 h-fit">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Vehicle Allocation Records</h2>
         <Button className="bg-green-500" onClick={handleOpen}>+ Add New Vehicle</Button>  
       </div>
 
-                             <ServerSideTableComponent
+<div className="overflow-x-auto max-w-[100%]">
+  <ServerSideTableComponent
                                type={"vehicle"}
                                columns={vehicleColumns}
                                serverSideFiltering={isServerSide}
@@ -190,6 +212,9 @@ const handleOpenAllocation = (row) => {
                                onDateRangeChange={setDateRange}
                              />
                            
+
+</div>
+                           
     </Card>
     <ModalComponent size={"xl"} open={open} setOpen={setOpen} title="Enter Vehicle Details">
       <VehicleForm  setOpen={setOpen} />
@@ -197,6 +222,12 @@ const handleOpenAllocation = (row) => {
     <ModalComponent size={"xl"} open={showEdit} setOpen={setShowEdit} title="Edit Vehicle">
       <VehicleForm isEdit = {true} setOpen={setShowEdit}  vehicleData={singleData} />
     </ModalComponent>
+ <ModalComponent size={"xl"} open={openMain} setOpen={setOpenMain} title="Request For Maintenance ">
+   
+   <MaintenanceRequestForm setOpen={setOpenMain} vehicleData={single}/>
+    </ModalComponent>
+
+
 
  <ModalComponent size={"xl"} open={openView} setOpen={setOpenView} title="View Vehicle">
     <ViewVehicle vehicleData={singleData} setOpen={setOpenView}/>

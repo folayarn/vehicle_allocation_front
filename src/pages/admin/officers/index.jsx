@@ -12,7 +12,6 @@ import { FetchUserThunk } from "../../../store/thunks/UserThunk";
 import { FaTrash, FaUserAlt, FaUserAltSlash } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 import { Cell } from "jspdf-autotable";
-import EditUserForm from "../../../components/EditUser";
 import ResetPassword from "../../../components/ResetPassword";
 import moment from "moment/moment";
 import ServerSideTableComponent from "../../../components/ServerSideTable";

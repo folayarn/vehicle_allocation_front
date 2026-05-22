@@ -48,6 +48,7 @@ const Dashboard = () => {
           <main
             className={`
               flex-1
+              overflow-x-auto
               p-4 sm:p-6 md:p-8 lg:p-10
               min-h-screen
               transition-all duration-300

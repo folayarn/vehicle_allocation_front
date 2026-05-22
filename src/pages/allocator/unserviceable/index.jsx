@@ -131,6 +131,7 @@ import { FetchDriversByVehicleThunk } from "../../../store/thunks/DriverThunk";
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Unserviceable Vehicle Allocation Records</h2>
       </div>
+<div className="overflow-x-auto max-w-[100%]">
 
                              <ServerSideTableComponent
                                type={"unservice"}
@@ -145,6 +146,7 @@ import { FetchDriversByVehicleThunk } from "../../../store/thunks/DriverThunk";
                                dateRange={dateRange}
                                onDateRangeChange={setDateRange}
                              />
+                             </div>
                            
     </Card>
    

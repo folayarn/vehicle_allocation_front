@@ -19,6 +19,9 @@ import { FetchServerTableThunk } from "../../store/thunks/ServerTableThunk";
 import { GiSteeringWheel } from "react-icons/gi";
 import MaintenanceReportForm from "../../components/MaintenanceReport";
 import { FetchMaintenancesByVehicleThunk } from "../../store/thunks/MaintenanceThunk";
+import { FetchSparePartRequestByVehicleThunk } from "../../store/thunks/SparePartRequestThunk";
+import MaintenanceRequestForm from "../../components/MaintenanceRequest";
+import SparePartRequestForm from "../../components/SparePartRequest";
 
 
  const MaintenancePage = () => {
@@ -42,7 +45,7 @@ import { FetchMaintenancesByVehicleThunk } from "../../store/thunks/MaintenanceT
   const [searchTerm, setSearchTerm] = useState('');
  const [dateRange, setDateRange] = useState({ start: '', end: '' });
   
- 
+ const [openMain,setOpenMain] = useState(false)
 
   
 
@@ -57,6 +60,12 @@ import { FetchMaintenancesByVehicleThunk } from "../../store/thunks/MaintenanceT
    });
   };
   
+  const handleOpenMain = (row) =>{
+     dispatch(FetchSparePartRequestByVehicleThunk(row.original.id)).then(() => {    
+    setSingle(row.original)
+      setOpenMain(true)
+   });
+  };
  
 
   const role = sessionStorage.getItem("role");
@@ -75,19 +84,19 @@ import { FetchMaintenancesByVehicleThunk } from "../../store/thunks/MaintenanceT
     accessor: "command",
     Cell: ({ row }) => <div>{row.original.command || "N/A"}</div>,
   },
-  {
-    Header: "Condition",
-    accessor: "condition",
-    Cell: ({ row }) => {
-      const condition = row.original.condition;
-      let colorClass = "text-gray-600";
-      if (condition === "SERVICEABLE") colorClass = "text-green-600 font-semibold";
-      if (condition === "UNSERVICEABLE") colorClass = "text-red-600";
+  // {
+  //   Header: "Condition",
+  //   accessor: "condition",
+  //   Cell: ({ row }) => {
+  //     const condition = row.original.condition;
+  //     let colorClass = "text-gray-600";
+  //     if (condition === "SERVICEABLE") colorClass = "text-green-600 font-semibold";
+  //     if (condition === "UNSERVICEABLE") colorClass = "text-red-600";
       
       
-      return <div className={colorClass}>{condition || "N/A"}</div>;
-    },
-  },
+  //     return <div className={colorClass}>{condition || "N/A"}</div>;
+  //   },
+  // },
   
   {
     Header: "Date",
@@ -103,12 +112,26 @@ import { FetchMaintenancesByVehicleThunk } from "../../store/thunks/MaintenanceT
     Cell: ({ row }) => (
       <div className="flex space-x-2 w-full justify-start">
         <Button size="sm" color="blue" onClick={() => handleOpenView(row)}>
-            Add Mechanic Report
+            Add Maintenance Report
         </Button>
+
+        
         </div>
     ),
   },
       
+  {
+    Header: "More Actions",
+    Cell: ({ row }) => (
+      <div className="flex space-x-2 w-full justify-start">
+        
+
+         <Button size="sm" color="purple" onClick={() => handleOpenMain(row)}>
+            Request For Spare-Parts
+        </Button>
+        </div>
+    ),
+  },
     ];
 
 
@@ -119,6 +142,7 @@ import { FetchMaintenancesByVehicleThunk } from "../../store/thunks/MaintenanceT
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Vehicle Allocation Records</h2>
       </div>
+<div className="overflow-x-auto max-w-[100%]">
 
                              <ServerSideTableComponent
                                type={"vehicle"}
@@ -133,10 +157,12 @@ import { FetchMaintenancesByVehicleThunk } from "../../store/thunks/MaintenanceT
                                dateRange={dateRange}
                                onDateRangeChange={setDateRange}
                              />
-                           
+                 </div>          
     </Card>
-    
-    <ModalComponent size={"xl"} open={openView} setOpen={setOpenView} title="Add Mechanic Report">
+    <ModalComponent size={"xl"} open={openMain} setOpen={setOpenMain} title="Add SparePart Request">
+      <SparePartRequestForm setOpen={setOpenMain} vehicleData={single}/>
+    </ModalComponent>
+    <ModalComponent size={"xl"} open={openView} setOpen={setOpenView} title="Add Maintenance Report">
       <MaintenanceReportForm setOpen={setOpenView} vehicleData={single}/>
     </ModalComponent>
  </> );

@@ -9,6 +9,8 @@ import { CreateRemarkThunk, DeleteRemarkThunk, UpdateRemarkThunk } from '../thun
 import { ApproveLogBookThunk, CreateLogBookThunk, DeleteLogBookThunk, RejectLogBookThunk, UpdateLogBookThunk } from '../thunks/LogBookThunk';
 import { CreateIncidentReportThunk, DeleteIncidentReportThunk, UpdateIncidentReportThunk } from '../thunks/IncidentReportThunk';
 import { CreateMaintenanceThunk, DeleteMaintenanceThunk, UpdateMaintenanceThunk } from '../thunks/MaintenanceThunk';
+import { ApproveSparePartRequestThunk, CreateSparePartRequestThunk, DeleteSparePartRequestThunk, RejectSparePartRequestThunk, UpdateSparePartRequestThunk } from '../thunks/SparePartRequestThunk';
+import { CreateMaintenanceRequestThunk, DeleteMaintenanceRequestThunk, UpdateMaintenanceRequestThunk } from '../thunks/MaintenanceRequestThunk';
 
 
 export const PostSlice = createSlice({
@@ -916,6 +918,250 @@ export const PostSlice = createSlice({
        
       })
       .addCase(RejectLogBookThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+
+       builder
+      .addCase(UpdateMaintenanceRequestThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(UpdateMaintenanceRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(UpdateMaintenanceRequestThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+        builder
+      .addCase(CreateMaintenanceRequestThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(CreateMaintenanceRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(CreateMaintenanceRequestThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+       builder
+      .addCase(DeleteMaintenanceRequestThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(DeleteMaintenanceRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(DeleteMaintenanceRequestThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+
+ builder
+      .addCase(CreateSparePartRequestThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(CreateSparePartRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(CreateSparePartRequestThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+
+      builder
+      .addCase(DeleteSparePartRequestThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(DeleteSparePartRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(DeleteSparePartRequestThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+      builder
+      .addCase(UpdateSparePartRequestThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(UpdateSparePartRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(UpdateSparePartRequestThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+
+      builder
+      .addCase(RejectSparePartRequestThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(RejectSparePartRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(RejectSparePartRequestThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+builder
+      .addCase(ApproveSparePartRequestThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(ApproveSparePartRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(ApproveSparePartRequestThunk.rejected, (state, action) => {
         
         state.loading = false;
         state.isError = true;

@@ -9,6 +9,7 @@ import { UserContext } from '../../context/UserContext';
 import Select from 'react-select';
 import { FetchServerTableThunk } from '../../store/thunks/ServerTableThunk';
 
+
 export const MultiSelectField = ({ field, form, options, placeholder, isDisabled, label }) => {
   const handleChange = (selectedOptions) => {
     const valueString = selectedOptions 
@@ -201,14 +202,14 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
   ];
 
   const accessLevelOptions = [
-    { value: 'allocator', label: 'Vehicle Allocator' },
-    { value: 'driver', label: 'Driver' },
-    { value: 'chief_driver_com', label: 'Chief Driver ' },
+    { value: 'allocator', label: 'Fleet Manager' },
+     { value: 'store', label: 'Store Manager' },
+    { value: 'driver', label: 'NCS Driver' },
+    { value: 'chief_driver_com', label: 'Chief Driver' },
     { value: 'chief_driver', label: 'Chief Driver HQ' },
     { value: 'transport', label: 'OC Transport & Logistic' },
-    { value: 'mechanic', label: 'OC Mechanic' },
+    { value: 'mechanic', label: 'OC Mechanical' },
     { value: 'user', label: 'User Management' },
-    { value: 'manager', label: 'Fleet Manager HQ' },
     { value: 'view', label: 'View Access' },
     { value: 'zone', label: 'Zonal Access' },
   ];

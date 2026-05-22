@@ -20,6 +20,8 @@ import { GiSteeringWheel } from "react-icons/gi";
 
 import LogBookForm from "../../components/LogBook";
 import { FetchLogBooksByVehicleThunk } from "../../store/thunks/LogBookThunk";
+import { FetchMaintenanceRequestByVehicleThunk } from "../../store/thunks/MaintenanceRequestThunk";
+import MaintenanceRequestForm from "../../components/MaintenanceRequest";
 
  const DriverPage = () => {
   const [open, setOpen] = useState(false);
@@ -42,7 +44,7 @@ import { FetchLogBooksByVehicleThunk } from "../../store/thunks/LogBookThunk";
   const [searchTerm, setSearchTerm] = useState('');
  const [dateRange, setDateRange] = useState({ start: '', end: '' });
   
- 
+ const [openMain,setOpenMain]=useState(false)
 
   
 
@@ -54,6 +56,13 @@ import { FetchLogBooksByVehicleThunk } from "../../store/thunks/LogBookThunk";
      dispatch(FetchLogBooksByVehicleThunk(row.original.id)).then(() => {  
       setSingle(row.original)  
     setOpenView(true)
+   });
+  };
+
+   const handleOpenMain = (row) =>{
+     dispatch(FetchMaintenanceRequestByVehicleThunk(row.original.id)).then(() => {  
+      setSingle(row.original)  
+    setOpenMain(true)
    });
   };
   
@@ -75,19 +84,19 @@ import { FetchLogBooksByVehicleThunk } from "../../store/thunks/LogBookThunk";
     accessor: "command",
     Cell: ({ row }) => <div>{row.original.command || "N/A"}</div>,
   },
-  {
-    Header: "Condition",
-    accessor: "condition",
-    Cell: ({ row }) => {
-      const condition = row.original.condition;
-      let colorClass = "text-gray-600";
-      if (condition === "SERVICEABLE") colorClass = "text-green-600 font-semibold";
-      if (condition === "UNSERVICEABLE") colorClass = "text-red-600";
+  // {
+  //   Header: "Condition",
+  //   accessor: "condition",
+  //   Cell: ({ row }) => {
+  //     const condition = row.original.condition;
+  //     let colorClass = "text-gray-600";
+  //     if (condition === "SERVICEABLE") colorClass = "text-green-600 font-semibold";
+  //     if (condition === "UNSERVICEABLE") colorClass = "text-red-600";
       
       
-      return <div className={colorClass}>{condition || "N/A"}</div>;
-    },
-  },
+  //     return <div className={colorClass}>{condition || "N/A"}</div>;
+  //   },
+  // },
   
   {
     Header: "Date",
@@ -105,6 +114,11 @@ import { FetchLogBooksByVehicleThunk } from "../../store/thunks/LogBookThunk";
         <Button size="sm" color="blue" onClick={() => handleOpenView(row)}>
            {role =="driver"? "Fill Log Book":"Check Log Book"} 
         </Button>
+
+         <Button size="sm" color="orange" onClick={() => handleOpenMain(row)}>
+           {"Request for Maintenace"} 
+        </Button>
+
         </div>
     ),
   },
@@ -119,6 +133,7 @@ import { FetchLogBooksByVehicleThunk } from "../../store/thunks/LogBookThunk";
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Vehicle Allocation Records</h2>
       </div>
+<div className="overflow-x-auto max-w-[100%]">
 
                              <ServerSideTableComponent
                                type={"vehicle"}
@@ -133,11 +148,16 @@ import { FetchLogBooksByVehicleThunk } from "../../store/thunks/LogBookThunk";
                                dateRange={dateRange}
                                onDateRangeChange={setDateRange}
                              />
-                           
+                           </div>
     </Card>
     
     <ModalComponent size={"xl"} open={openView} setOpen={setOpenView} title="ENTER LOG BOOK ">
       <LogBookForm setOpen={setOpenView} vehicleData={single}/>
+    </ModalComponent>
+
+    <ModalComponent size={"xl"} open={openMain} setOpen={setOpenMain} title="Request For Maintenance ">
+   
+   <MaintenanceRequestForm setOpen={setOpenMain} vehicleData={single}/>
     </ModalComponent>
  </> );
 };

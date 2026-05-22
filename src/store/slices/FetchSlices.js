@@ -13,6 +13,8 @@ import { FetchRemarksByVehicleThunk } from '../thunks/RemarkThunk';
 import { FetchLogBooksByVehicleThunk } from '../thunks/LogBookThunk';
 import { FetchIncidentReportsByVehicleThunk } from '../thunks/IncidentReportThunk';
 import { FetchMaintenancesByVehicleThunk } from '../thunks/MaintenanceThunk';
+import { FetchMaintenanceRequestByVehicleThunk } from '../thunks/MaintenanceRequestThunk';
+import { FetchSingleSparePartRequestThunk, FetchSparePartRequestByVehicleThunk } from '../thunks/SparePartRequestThunk';
 
 
 export const FetchSlice = createSlice({
@@ -280,9 +282,81 @@ builder
       });
 
 
+builder
+      .addCase(FetchMaintenanceRequestByVehicleThunk.pending, (state) => {
+      
+        state.data=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchMaintenanceRequestByVehicleThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.data= action.payload;
+      })
+      .addCase(FetchMaintenanceRequestByVehicleThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
 
+builder
+      .addCase(FetchSparePartRequestByVehicleThunk.pending, (state) => {
+      
+        state.data=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchSparePartRequestByVehicleThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.data= action.payload;
+      })
+      .addCase(FetchSparePartRequestByVehicleThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
 
       
+builder
+      .addCase(FetchSingleSparePartRequestThunk.pending, (state) => {
+      
+        state.singleData=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchSingleSparePartRequestThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.singleData= action.payload;
+      })
+      .addCase(FetchSingleSparePartRequestThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
 
   },
 });

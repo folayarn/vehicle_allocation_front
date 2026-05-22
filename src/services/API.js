@@ -346,4 +346,59 @@ export const rejectLogBook = (id,reason) => {
 }
 
 
+
+
+export const addMaintenanceRequest =(data)=>{
+  return Api.post('/MaintenanceRequest', data);
+
+}
+export const updateMaintenanceRequest = (id, data) => {
+  return Api.put(`/MaintenanceRequest/${id}`, data);
+}
+export const deleteMaintenanceRequest = (id) => {
+  return Api.delete(`/MaintenanceRequest/${id}`);
+} 
+
+export const getMaintenanceRequestByVehicle = (vehicle_id) => {
+  return Api.get(`/MaintenanceRequest/vehicle/${vehicle_id}`);
+}
+
+
+export const getSparePartRequest =(param)=>{
+  return Api.get('/SparePartRequest', {param});
+
+}
+
+export const getSingleSparePartRequest =(id)=>{
+  return Api.get('/SparePartRequest/'+id);
+
+}
+export const addSparePartRequest =(data)=>{
+  return Api.post('/SparePartRequest', data);
+
+}
+export const updateSparePartRequest = (id, data) => {
+  return Api.put(`/SparePartRequest/${id}`, data);
+}
+
+export const approveSparePartRequest = (id, data) => {
+  return Api.put(`/SparePartRequest/${id}/approve`, data);
+}
+export const rejectSparePartRequest = (id, data) => {
+  return Api.put(`/SparePartRequest/${id}/reject`, data);
+}
+export const deleteSparePartRequest = (id) => {
+  return Api.delete(`/SparePartRequest/${id}`);
+} 
+
+export const getSparePartRequestByVehicle = (vehicle_id) => {
+  return Api.get(`/SparePartRequest/vehicle/${vehicle_id}`);
+}
+
+export const AckwnoledgeRequest = (id,remark) => {
+  return Api.put(`/MaintenanceRequest/${id}/acknowledge`,{remark});
+}
+
+
+
 export default Api;

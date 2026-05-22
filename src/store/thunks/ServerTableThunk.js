@@ -1,6 +1,6 @@
 // thunks/ServerTableThunk.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getUnserviceableVehicle, getUser, getVehicle } from '../../services/API';
+import { getSparePartRequest, getUnserviceableVehicle, getUser, getVehicle } from '../../services/API';
 
 
 // Server-side table data fetcher for specific endpoints
@@ -18,7 +18,8 @@ export const FetchServerTableThunk = createAsyncThunk(
       const apiMap = {
         vehicle: getVehicle,
         officer: getUser,
-        unservice:getUnserviceableVehicle
+        unservice:getUnserviceableVehicle,
+        sparepart:getSparePartRequest
         
       };
 

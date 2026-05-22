@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import bg from '../../assets/img/y.png';
+import bg from '../../assets/img/p.jpg';
 import { Card, Input, Checkbox, Button, Typography } from '@material-tailwind/react';
 import logo from '../../assets/img/logo.jpg';
 import bg_p from '../../assets/img/bg-pattern-2.png';
@@ -79,11 +79,16 @@ export function SignIn() {
             {/* Background Image */}
             <div 
                 className="absolute inset-0 z-0"
-               
+                style={{
+                    backgroundImage: `url(${bg})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                }}
             />
             
             {/* Dark Overlay for better text visibility */}
-            <div className="absolute inset-0 z-1 bg-black/60" />
+            <div className="absolute inset-0 z-1 bg-black/70" />
             
             {/* Animated Gradient Overlay */}
             <div className="absolute inset-0 z-1 bg-gradient-to-br from-teal-900/30 via-transparent to-blue-900/30" />
@@ -179,7 +184,7 @@ export function SignIn() {
                                             <motion.img 
                                                 src={logo} 
                                                 alt="Logo" 
-                                                className="mx-auto h-24 w-24 rounded-full border-4 border-teal-500 shadow-lg"
+                                                className="mx-auto h-24 w-24 rounded-full border-4 border-green-500 shadow-lg"
                                                 whileHover={{ scale: 1.05, rotate: 360 }}
                                                 transition={{ duration: 0.5 }}
                                             />

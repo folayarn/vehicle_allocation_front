@@ -12,6 +12,7 @@ import DriverPage from "../pages/driver";
 import MaintenancePage from "../pages/Maintenance";
 import IncidentReportPage from "../pages/IncidentReport";
 import UnserviceableAllocationPage from "../pages/allocator/unserviceable";
+import SparePartPage from "../pages/sparepart";
 
 
 
@@ -26,6 +27,14 @@ export const routes = [
         name: "dashboard",
         path: "/",
         role: "admin",
+        element: <AdminDasboard/>,
+      },
+
+      {
+        icon: <FaHome size={20} />,
+        name: "dashboard",
+        path: "/",
+        role: "store",
         element: <AdminDasboard/>,
       },
 
@@ -147,6 +156,19 @@ export const routes = [
         path: "/allocations",
         role: "admin",
         element: <AllocationPage/>,
+    },
+
+    {       icon: <FaHome size={20} />,
+        name: "Spare Part Request",
+        path: "/sparepart",
+        role: "allocator",
+        element: <SparePartPage/>,
+    },
+    {       icon: <FaHome size={20} />,
+        name: "Spare Part Request",
+        path: "/sparepart",
+        role: "store",
+        element: <SparePartPage/>,
     },
     {       icon: <FaHome size={20} />,
         name: "Unserviceable Vehicles",

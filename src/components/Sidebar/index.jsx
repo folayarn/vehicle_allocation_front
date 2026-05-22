@@ -58,9 +58,16 @@ const Sidebar = ({ routes }) => {
     {roleIcons[role.toLowerCase()] || roleIcons.officer}
     <span className="truncate">
       {role === "admin" ? "ADMIN" : role === "user" ? "USER MANAGEMENT" : role === "oc_excise" || role === "cac" ? "View Access (Command)" : 
-      role === "allocator" ? "ALLOCATION OFFICER" :
+      role === "allocator" ? "FLEET MANAGER" :
       role == "view" ? "VIEW ACCESS":
-       role == "zone" ? `ZONAL ACCESS` : role == "driver" ? "DRIVER ACCESS": role =="chief_driver_com"?"Chief Driver":role}
+       role == "zone" ? `ZONAL ACCESS` 
+       : role == "driver" ? "NCS DRIVER ACCESS": 
+       role =="chief_driver_com"?"Chief Driver":
+              role =="mechanic"?"OC MECHANICAL":
+               role =="store"?"STORE MANAGER"
+
+
+       :role}
     </span>
   </span>
   

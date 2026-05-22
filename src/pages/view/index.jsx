@@ -160,6 +160,7 @@ const handleOpenAllocation = (row) => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Vehicle Allocation Records</h2>
       </div>
+<div className="overflow-x-auto max-w-[100%]">
 
                              <ServerSideTableComponent
                                type={"vehicle"}
@@ -174,6 +175,7 @@ const handleOpenAllocation = (row) => {
                                dateRange={dateRange}
                                onDateRangeChange={setDateRange}
                              />
+                             </div>
                            
     </Card>
     <ModalComponent size={"xl"} open={open} setOpen={setOpen} title="Enter Vehicle Details">
