@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
-import Api from "../services/api";
+import Api from "../services/API";
 
 const useCardData = (dateRange = "yearly", selectedDate = null) => {
   const [loading, setLoading] = useState(true);
