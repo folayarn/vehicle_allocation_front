@@ -1,12 +1,8 @@
 import axios from 'axios';
 
 // Create Axios instance
-const base_url = "http://localhost:7119/api"
-// Live Url options:
- //const base_url = _BASE_URL
+const base_url = import.meta.env.VITE_API_URL
 
-
-//const base_url = "https://excise-api-test.nigeriatradehub.gov.ng/api";
 
 export const Api = axios.create({
   baseURL: base_url,
