@@ -13,6 +13,12 @@ import MaintenancePage from "../pages/Maintenance";
 import IncidentReportPage from "../pages/IncidentReport";
 import UnserviceableAllocationPage from "../pages/allocator/unserviceable";
 import SparePartPage from "../pages/sparepart";
+import FleetSignIn from "../pages/auth/Fleet-sign-in";
+import StoreSignIn from "../pages/auth/Store-sign-in";
+import { AssetSignIn } from "../pages/auth/Asset-sign-in";
+import AccommodationSignIn from "../pages/auth/Accommodation-sign-in";
+import AssetDashboard from "../pages/admin/dashboard/asset_dashboard";
+import AssetPage from "../pages/asset_management";
 
 
 
@@ -24,12 +30,68 @@ export const routes = [
     pages: [
       {
         icon: <FaHome size={20} />,
-        name: "dashboard",
+        name: "Fleet Stats",
         path: "/",
         role: "admin",
         element: <AdminDasboard/>,
       },
+      {
+        icon: <FaHome size={20} />,
+        name: "Asset Stats",
+        path: "/asset_stat",
+        role: "admin",
+        element: <AssetDashboard/>,
+      },
+      {
+        icon: <FaHome size={20} />,
+        name: "dashboard",
+        path: "/",
+        role: "manager",
+        element: <AssetDashboard/>,
+      },
+       {
+        icon: <FaHome size={20} />,
+        name: "dashboard",
+        path: "/",
+        role: "asset_view",
+        element: <AssetDashboard/>,
+      },
+       {
+        icon: <FaHome size={20} />,
+        name: "dashboard",
+        path: "/",
+        role: "asset_zone",
+        element: <AssetDashboard/>,
+      },
 
+      {
+        icon: <FaHome size={20} />,
+        name: "Asset Management",
+        path: "/asset",
+        role: "manager",
+        element: <AssetPage/>,
+      },
+      {
+        icon: <FaHome size={20} />,
+        name: "Asset Management",
+        path: "/asset",
+        role: "asset_zone",
+        element: <AssetPage/>,
+      },
+      {
+        icon: <FaHome size={20} />,
+        name: "Asset Management",
+        path: "/asset",
+        role: "asset_view",
+        element: <AssetPage/>,
+      },
+       {
+        icon: <FaHome size={20} />,
+        name: "Asset Management",
+        path: "/asset",
+        role: "admin",
+        element: <AssetPage/>,
+      },
       {
         icon: <FaHome size={20} />,
         name: "dashboard",
@@ -54,10 +116,17 @@ export const routes = [
       },
        {
         icon: <FaHome size={20} />,
-        name: "dashboard",
+        name: "Fleet Stats",
         path: "/",
         role: "user",
         element: <AdminDasboard/>
+      },
+       {
+        icon: <FaHome size={20} />,
+        name: "Asset Stats",
+        path: "/asset_stat",
+        role: "user",
+        element: <AssetDashboard/>,
       },
        {
         icon: <FaHome size={20} />,
@@ -213,8 +282,32 @@ export const routes = [
       {
         icon: null,
         name: "sign in",
+        path: "fleet-sign-in",
+        element:<FleetSignIn/>,
+      },
+{
+        icon: null,
+        name: "sign in",
         path: "",
         element:<SignIn/>,
+      },
+       {
+        icon: null,
+        name: "sign in",
+        path: "store-sign-in",
+        element:<StoreSignIn/>,
+      },
+      {
+        icon: null,
+        name: "sign in",
+        path: "asset-sign-in",
+        element:<AssetSignIn/>,
+      },
+      {
+        icon: null,
+        name: "sign in",
+        path: "accommodation-sign-in",
+        element:<AccommodationSignIn/>,
       },
     ],
   },

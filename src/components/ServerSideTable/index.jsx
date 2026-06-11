@@ -280,13 +280,15 @@ const ServerSideTableComponent = ({
   const renderTableBody = () => {
     if (page.length === 0) {
       return (
-        <tr>
+<tr>
           <td colSpan={columns.length} className="px-6 py-4 text-center text-gray-500">
             {searchTerm  || dateRange.start || dateRange.end
               ? 'No results found for current filters'
               : 'No data available'}
           </td>
         </tr>
+     
+        
       );
     }
 
@@ -294,9 +296,10 @@ const ServerSideTableComponent = ({
       prepareRow(row);
       const { key, ...rowProps } = row.getRowProps();
       
-     
       
       return (
+      <>
+      {row.original.accessLevel !="admin" &&(
         <tr key={key} {...rowProps} className='w-full'>
           {row.cells.map((cell, cellIndex) => {
             const { key: cellKey, ...cellProps } = cell.getCellProps();
@@ -323,6 +326,8 @@ const ServerSideTableComponent = ({
             );
           })}
         </tr>
+      )}
+      </>
       );
     });
   };

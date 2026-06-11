@@ -10,7 +10,7 @@ export const LoginThunk = createAsyncThunk(
       return response.data; // Assuming the response has this structure
     } catch (error) {
       console.log(error)
-      return rejectWithValue(error.response?.data?.message);
+      return rejectWithValue(error.response?.data?.message || "something went wrong");
     }
   }
 );

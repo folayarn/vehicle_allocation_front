@@ -179,6 +179,10 @@ export const getVehicle = (params)=>{
   return Api.get('VehicleAssessment/get-all/'+sessionStorage.getItem('e'), { params });
 }
 
+export const getAsset = (params)=>{
+  return Api.get('Assets/get-all/'+sessionStorage.getItem('e'), { params });
+}
+
 export const getUnserviceableVehicle = (params)=>{
   return Api.get('VehicleAssessment/get-all/unserviceable/'+sessionStorage.getItem('e'), { params });
 }
@@ -394,6 +398,62 @@ export const getSparePartRequestByVehicle = (vehicle_id) => {
 export const AckwnoledgeRequest = (id,remark) => {
   return Api.put(`/MaintenanceRequest/${id}/acknowledge`,{remark});
 }
+
+// Asset API endpoints
+export const getAllAssets = () => {
+  return Api.get('/Assets');
+};
+
+export const getAssetsByCommand = (commandId) => {
+  return Api.get(`/Assets/command/${commandId}`);
+};
+
+export const getAssetsByZone = (zone) => {
+  return Api.get(`/Assets/zone/${zone}`);
+};
+
+export const getAssetsByStatus = (status) => {
+  return Api.get(`/Assets/status/${status}`);
+};
+
+export const getAssetsByCondition = (condition) => {
+  return Api.get(`/Assets/condition/${condition}`);
+};
+
+export const getAssetsByType = (assetType) => {
+  return Api.get(`/Assets/type/${assetType}`);
+};
+
+export const getAssetById = (id) => {
+  return Api.get(`/Assets/${id}`);
+};
+
+export const addAsset = (assetData) => {
+  return Api.post('/Assets', assetData);
+};
+
+export const updateAsset = (id, assetData) => {
+  return Api.put(`/Assets/${id}`, assetData);
+};
+
+export const deleteAsset = (id) => {
+  return Api.delete(`/Assets/${id}`);
+};
+
+// Additional useful endpoints
+export const getAssetSummary = () => {
+  return Api.get('/Assets/summary');
+};
+
+export const getAssetsByDateRange = (startDate, endDate) => {
+  return Api.get('/Assets/date-range', {
+    params: { startDate, endDate }
+  });
+};
+
+
+
+
 
 
 

@@ -11,6 +11,7 @@ import { CreateIncidentReportThunk, DeleteIncidentReportThunk, UpdateIncidentRep
 import { CreateMaintenanceThunk, DeleteMaintenanceThunk, UpdateMaintenanceThunk } from '../thunks/MaintenanceThunk';
 import { ApproveSparePartRequestThunk, CreateSparePartRequestThunk, DeleteSparePartRequestThunk, RejectSparePartRequestThunk, UpdateSparePartRequestThunk } from '../thunks/SparePartRequestThunk';
 import { CreateMaintenanceRequestThunk, DeleteMaintenanceRequestThunk, UpdateMaintenanceRequestThunk } from '../thunks/MaintenanceRequestThunk';
+import { CreateAssetThunk, UpdateAssetThunk } from '../thunks/AssetThunk';
 
 
 export const PostSlice = createSlice({
@@ -1162,6 +1163,66 @@ builder
        
       })
       .addCase(ApproveSparePartRequestThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+      builder
+      .addCase(CreateAssetThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(CreateAssetThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(CreateAssetThunk.rejected, (state, action) => {
+        
+        state.loading = false;
+        state.isError = true;
+        state.open = true;
+        state.isLogin = false;
+        state.success = false;
+        state.message = action.payload;
+      });
+
+       builder
+      .addCase(UpdateAssetThunk.pending, (state) => {
+      
+        state.loading = true;
+        state.isError = false;
+        state.open = false;
+        state.isLogin = false;
+        state.success = false;
+        state.message = '';
+      })
+      .addCase(UpdateAssetThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false;
+        state.open = true;
+        state.success = true;
+        state.message = action.payload?.message;
+
+        
+       
+      })
+      .addCase(UpdateAssetThunk.rejected, (state, action) => {
         
         state.loading = false;
         state.isError = true;

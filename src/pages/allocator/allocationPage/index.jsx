@@ -180,6 +180,7 @@ const handleOpenAllocation = (row) => {
    });
   }
 
+
    const handleOpenMain = (row) =>{
        dispatch(FetchMaintenanceRequestByVehicleThunk(row.original.id)).then(() => {  
         setSingle(row.original)  

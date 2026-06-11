@@ -9,7 +9,6 @@ import { UserContext } from '../../context/UserContext';
 import Select from 'react-select';
 import { FetchServerTableThunk } from '../../store/thunks/ServerTableThunk';
 
-
 export const MultiSelectField = ({ field, form, options, placeholder, isDisabled, label }) => {
   const handleChange = (selectedOptions) => {
     const valueString = selectedOptions 
@@ -61,20 +60,29 @@ export const MultiSelectField = ({ field, form, options, placeholder, isDisabled
 const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
   const dispatch = useDispatch();
   const { user } = useContext(UserContext);
-  const { loading, isSuccess, error } = useSelector((state) => state.PostSlice);
+  const { loading, isSuccess, error } = useSelector((state) => state.PostSlice || {});
   const role = sessionStorage.getItem('role');
+
+  // User type options
+  const userTypeOptions = [
+    { value: "Fleet", label: "Fleet User" },
+    { value: "Asset", label: "Asset User" },
+    { value: "Accommodation", label: "Accommodation User" },
+    { value: "Store", label: "Store User" },
+  ];
 
   // Dynamic validation schema based on edit mode
   const getValidationSchema = () => {
     return Yup.object().shape({
+      userType: Yup.string()
+        .required('User Type is required')
+        .oneOf(['Fleet', 'Asset', 'Accommodation', 'Store'], 'Invalid user type'),
       rank: Yup.string()
         .max(50, 'Rank cannot exceed 50 characters')
-        .transform((value) => value?.toUpperCase())
         .nullable(),
       fullname: Yup.string()
         .max(255, 'Fullname cannot exceed 255 characters')
-        .required('Fullname is required')
-        .transform((value) => value?.toUpperCase()),
+        .required('Fullname is required'),
       phone: Yup.string()
         .matches(/^\d{11}$/, 'Phone number must be exactly 11 digits')
         .required('Phone is required'),
@@ -85,14 +93,14 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
       password: Yup.string()
         .min(6, 'Password must be at least 6 characters')
         .when([], {
-          // Password is required only when creating new user
           is: () => !isEdit,
           then: (schema) => schema.required('Password is required'),
           otherwise: (schema) => schema.notRequired()
         }),
       svn: Yup.string()
         .matches(/^\d{5}$/, 'SVN must be exactly 5 digits')
-        .nullable(),
+        .nullable()
+        .transform((value) => value || null),
       accessLevel: Yup.string().required('Access Level is required'),
       zone: Yup.string().nullable(),
     });
@@ -101,6 +109,7 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
   // Properly map initial values from userData for both create and edit modes
   const getInitialValues = () => {
     return {
+      userType: userData?.userType || 'Fleet', // Default to Fleet for new users
       rank: userData?.rank || '',
       fullname: userData?.fullname || '',
       phone: userData?.phone || '',
@@ -121,28 +130,35 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
       // Prepare data for API
       const submitData = { ...values };
       
+      // Transform values to uppercase where needed
+      if (submitData.fullname) submitData.fullname = submitData.fullname.toUpperCase();
+      if (submitData.rank) submitData.rank = submitData.rank.toUpperCase();
+      if (submitData.command) submitData.command = submitData.command;
+      
       // Don't send password if it's empty in edit mode
       if (isEdit && !submitData.password) {
         delete submitData.password;
       }
 
-      // Remove id from create mode
-      if (!isEdit && submitData.id) {
-        delete submitData.id;
+      // Remove officerId if not needed for create mode
+      if (!isEdit && submitData.officerId) {
+        delete submitData.officerId;
       }
 
-      const confirmMessage = isEdit ? 'Update this user?' : 'Create this user?';
+      const confirmMessage = isEdit 
+        ? 'Are you sure you want to update this user?' 
+        : `Are you sure you want to create this ${submitData.userType} user?`;
       
-      if (confirm(confirmMessage)) {
+      if (window.confirm(confirmMessage)) {
         const result = await dispatch(action(submitData)).unwrap();
         
         if (result) {
           resetForm();
           setOpen(false);
           
-          // Refresh the table data
+          // Refresh the table data based on user type
           dispatch(FetchServerTableThunk({
-            type: 'officer',
+            type: "officer",
             pageIndex: 0,
             pageSize: 20,
             filters: {},
@@ -152,24 +168,26 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
       }
     } catch (error) {
       console.error('Error:', error);
-      // You might want to show an error toast here
-      alert(error?.message || 'An error occurred. Please try again.');
+      const errorMessage = error?.response?.data?.message || error?.message || 'An error occurred. Please try again.';
+      alert(errorMessage);
     } finally {
       setSubmitting(false);
     }
   };
 
   const zoneOptions = [
-    { value: "A", label: "Zone A" },
-    { value: "B", label: "Zone B" },
-    { value: "C", label: "Zone C" },
-    { value: "D", label: "Zone D" },
+    { value: "Zone A", label: "Zone A" },
+    { value: "Zone B", label: "Zone B" },
+    { value: "Zone C", label: "Zone C" },
+    { value: "Zone D", label: "Zone D" },
     { value: "HQ", label: "Headquarters" },
   ];
 
   const commandOptions = [
     { value: "ADAMAWA/TARABA", label: "ADAMAWA/TARABA" },
     { value: "APAPA", label: "APAPA" },
+        { value: "HQ", label: "HEADQUARTERS" },
+
     { value: "BAUCHI/GOMBE", label: "BAUCHI/GOMBE" },
     { value: "BORNO/YOBE", label: "BORNO/YOBE" },
     { value: "CROSS RIVER/AKWA IBOM", label: "CROSS RIVER/AKWA IBOM" },
@@ -202,8 +220,9 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
   ];
 
   const accessLevelOptions = [
+
     { value: 'allocator', label: 'Fleet Manager' },
-     { value: 'store', label: 'Store Manager' },
+    { value: 'store', label: 'Store Manager' },
     { value: 'driver', label: 'NCS Driver' },
     { value: 'chief_driver_com', label: 'Chief Driver' },
     { value: 'chief_driver', label: 'Chief Driver HQ' },
@@ -214,12 +233,20 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
     { value: 'zone', label: 'Zonal Access' },
   ];
 
+const assetLevelOptions = [
+    
+    { value: 'asset_view', label: 'View Access' },
+    { value: 'asset_zone', label: 'Zonal Access' },
+    {value: 'manager', label: 'Asset Manager Access'}
+  ];
+
+
   const rankOptions = [
-    { value: 'caIII', label: 'Customs Assistant III' },
-    { value: 'caII', label: 'Customs Assistant II' },
-    { value: 'caI', label: 'Customs Assistant I' },
-    { value: 'aic', label: 'Assistant Inspector of Customs' },
-    { value: 'ic', label: 'Inspector of Customs' },
+    { value: 'CAIII', label: 'Customs Assistant III' },
+    { value: 'CAII', label: 'Customs Assistant II' },
+    { value: 'CAI', label: 'Customs Assistant I' },
+    { value: 'AIC', label: 'Assistant Inspector of Customs' },
+    { value: 'IC', label: 'Inspector of Customs' },
     { value: 'ASCII', label: 'Assistant Superintendent of Customs II' },
     { value: 'ASCI', label: 'Assistant Superintendent of Customs' },
     { value: 'DSC', label: 'Deputy Superintendent of Customs' },
@@ -239,44 +266,82 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
         {isEdit ? 'Edit User' : 'Create New User'}
       </Typography>
       
+      {/* Show error alert if exists */}
+      {error && (
+        <Alert color="red" className="mb-4">
+          {typeof error === 'string' ? error : error.message || 'An error occurred'}
+        </Alert>
+      )}
+      
       <Formik
         initialValues={getInitialValues()}
         validationSchema={getValidationSchema()}
         onSubmit={handleSubmit}
         enableReinitialize={true}
       >
-        {({ values, setFieldValue, isSubmitting }) => (
+        {({ values, setFieldValue, isSubmitting, errors, touched }) => (
           <Form className="grid lg:grid-cols-3 grid-cols-1 gap-4">
+            {/* User Type Field - Disabled in edit mode */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                User Type <span className="text-red-500">*</span>
+              </label>
+              <Field
+                name="userType"
+                component={SelectField}
+                options={userTypeOptions}
+                onChange={(option) => {
+                  setFieldValue('userType', option?.value || '');
+                }}
+                placeholder="Select User Type"
+                isDisabled={isEdit}
+                id="userType"
+              />
+              <ErrorMessage name="userType" component="div" className="text-red-500 text-sm mt-1" />
+              {isEdit && (
+                <p className="text-xs text-gray-500 mt-1">User type cannot be changed in edit mode</p>
+              )}
+            </div>
+
             {/* Access Level Field */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Access Level <span className="text-red-500">*</span>
+              </label>
               <Field
                 name="accessLevel"
                 component={SelectField}
-                options={accessLevelOptions}
+                options={values.userType === 'Asset' ? assetLevelOptions : values.userType==="Fleet"? accessLevelOptions : []}
                 onChange={(option) => {
-                  setFieldValue('accessLevel', option.value);
+                  setFieldValue('accessLevel', option?.value || '');
                 }}
                 placeholder="Select Access Level"
                 id="accessLevel"
               />
-              <ErrorMessage name="accessLevel" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage name="accessLevel" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
             {/* Rank Field */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Rank</label>
               <Field 
                 name="rank" 
                 component={SelectField} 
                 options={rankOptions} 
                 placeholder="Select Rank" 
-                label="Rank" 
                 id="rank"
+                onChange={(option) => {
+                  setFieldValue('rank', option?.value || '');
+                }}
               />
-              <ErrorMessage name="rank" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage name="rank" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
             {/* Fullname Field */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Fullname <span className="text-red-500">*</span>
+              </label>
               <Field
                 name="fullname"
                 as={Input}
@@ -287,11 +352,14 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
                   setFieldValue('fullname', e.target.value.toUpperCase());
                 }}
               />
-              <ErrorMessage name="fullname" component="div" id="fullname-error" className="text-red-500 text-sm" />
+              <ErrorMessage name="fullname" component="div" id="fullname-error" className="text-red-500 text-sm mt-1" />
             </div>
 
             {/* Phone Field */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Phone <span className="text-red-500">*</span>
+              </label>
               <Field 
                 name="phone" 
                 as={Input} 
@@ -299,41 +367,49 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
                 id="phone"
                 aria-describedby="phone-error"
               />
-              <ErrorMessage name="phone" component="div" id="phone-error" className="text-red-500 text-sm" />
+              <ErrorMessage name="phone" component="div" id="phone-error" className="text-red-500 text-sm mt-1" />
             </div>
 
             {/* Command Field */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Command <span className="text-red-500">*</span>
+              </label>
               <Field
                 name="command"
                 component={SelectField}
                 options={commandOptions}
                 placeholder="Select Command"
                 isDisabled={role === 'cpc'}
-                label="Command"
                 id="command"
                 onChange={(option) => {
-                  setFieldValue('command', option.value);
+                  setFieldValue('command', option?.value || '');
                 }}
               />
-              <ErrorMessage name="command" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage name="command" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
             {/* Zone Field */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Zone</label>
               <Field 
                 name="zone" 
                 component={SelectField} 
                 options={zoneOptions} 
                 placeholder="Select Zone" 
-                label="Zone" 
                 id="zone"
+                onChange={(option) => {
+                  setFieldValue('zone', option?.value || '');
+                }}
               />
-              <ErrorMessage name="zone" component="div" className="text-red-500 text-sm" />
+              <ErrorMessage name="zone" component="div" className="text-red-500 text-sm mt-1" />
             </div>
 
             {/* Email Field - Disabled in edit mode */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email <span className="text-red-500">*</span>
+              </label>
               <Field
                 name="email"
                 as={Input}
@@ -343,7 +419,7 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
                 disabled={isEdit}
                 className={isEdit ? "bg-gray-100" : ""}
               />
-              <ErrorMessage name="email" component="div" id="email-error" className="text-red-500 text-sm" />
+              <ErrorMessage name="email" component="div" id="email-error" className="text-red-500 text-sm mt-1" />
               {isEdit && (
                 <p className="text-xs text-gray-500 mt-1">Email cannot be changed in edit mode</p>
               )}
@@ -351,16 +427,19 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
 
             {/* Password Field - Required only for create mode */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {isEdit ? "New Password (optional)" : "Password"}
+                {!isEdit && <span className="text-red-500">*</span>}
+              </label>
               <Field 
                 name="password" 
                 type="password" 
                 as={Input} 
-                label={isEdit ? "New Password (optional)" : "Password"} 
                 id="password"
                 aria-describedby="password-error"
                 placeholder={isEdit ? "Leave blank to keep current password" : "Enter password"}
               />
-              <ErrorMessage name="password" component="div" id="password-error" className="text-red-500 text-sm" />
+              <ErrorMessage name="password" component="div" id="password-error" className="text-red-500 text-sm mt-1" />
               {isEdit && (
                 <p className="text-xs text-gray-500 mt-1">Only enter if you want to change the password</p>
               )}
@@ -368,6 +447,7 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
 
             {/* SVN Field */}
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">SVN (5 digits)</label>
               <Field 
                 name="svn" 
                 as={Input} 
@@ -376,17 +456,17 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
                 maxLength={5}
                 aria-describedby="svn-error"
               />
-              <ErrorMessage name="svn" component="div" id="svn-error" className="text-red-500 text-sm" />
+              <ErrorMessage name="svn" component="div" id="svn-error" className="text-red-500 text-sm mt-1" />
             </div>
 
             {/* Submit Button */}
-            <div className="lg:col-span-3 flex gap-3">
+            <div className="lg:col-span-3 flex gap-3 mt-4">
               <Button 
                 type="submit" 
                 className="bg-teal-500"
                 disabled={isSubmitting || loading}
               >
-                {isSubmitting || loading ? 'Processing...' : isEdit ? 'Update User' : 'Create User'}
+                {isSubmitting || loading ? 'Processing...' : (isEdit ? 'Update User' : 'Create User')}
               </Button>
               
               <Button 
@@ -399,6 +479,15 @@ const UserForm = ({ setOpen, userData = {}, isEdit = false }) => {
                 Cancel
               </Button>
             </div>
+
+            {/* Display current user type info in edit mode */}
+            {isEdit && values.userType && (
+              <div className="lg:col-span-3 mt-2">
+                <p className="text-sm text-blue-600">
+                  <strong>Note:</strong> Editing a {values.userType} user
+                </p>
+              </div>
+            )}
           </Form>
         )}
       </Formik>

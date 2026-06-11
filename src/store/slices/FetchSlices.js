@@ -15,6 +15,7 @@ import { FetchIncidentReportsByVehicleThunk } from '../thunks/IncidentReportThun
 import { FetchMaintenancesByVehicleThunk } from '../thunks/MaintenanceThunk';
 import { FetchMaintenanceRequestByVehicleThunk } from '../thunks/MaintenanceRequestThunk';
 import { FetchSingleSparePartRequestThunk, FetchSparePartRequestByVehicleThunk } from '../thunks/SparePartRequestThunk';
+import { FetchSingleAssetThunk } from '../thunks/AssetThunk';
 
 
 export const FetchSlice = createSlice({
@@ -351,6 +352,32 @@ builder
         state.singleData= action.payload;
       })
       .addCase(FetchSingleSparePartRequestThunk.rejected, (state, action) => {
+      
+        state.loading = true;
+        state.isError = true;
+        state.isSuccess = false;
+        
+      });
+
+
+      builder
+      .addCase(FetchSingleAssetThunk.pending, (state) => {
+      
+        state.singleData=[];
+        state.loading = true;
+        
+        state.isError = false;
+        state.isSuccess = false;
+      
+      })
+      .addCase(FetchSingleAssetThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isError = false
+        state.isSuccess = true;
+        
+        state.singleData= action.payload;
+      })
+      .addCase(FetchSingleAssetThunk.rejected, (state, action) => {
       
         state.loading = true;
         state.isError = true;

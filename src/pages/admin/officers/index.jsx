@@ -82,18 +82,12 @@ import ServerSideTableComponent from "../../../components/ServerSideTable";
       Header: "Name",
       accessor: "fullname",
     },
-    {
-      Header: "Factory",
-      accessor: "factoryName",
-      Cell: ({row}) => (
-        <div>{row.original.factoryName || "N/A"}</div>
-      ),
-    },
+    
      {
       Header: "Command",
-      accessor: "commandName",
+      accessor: "command",
       Cell: ({row}) => (
-        <div>{row.original.commandName || "N/A"}</div>
+        <div>{row.original.command || "N/A"}</div>
       ),
     },
     {
@@ -104,6 +98,10 @@ import ServerSideTableComponent from "../../../components/ServerSideTable";
     {
       Header: "Email",
       accessor: "email",
+    },
+     {
+      Header: "System Type",
+      accessor: "userType",
     },
     {
       Header: "Role",
