@@ -5,8 +5,10 @@ export const setHeaderTitle =(userType)=>{
     return "Asset Management System"
  }else if (userType == "Accommodation"){
     return "Accommodation Management System"
- }else{
+ }else if (userType == "Store"){
     return "Store Management System"
+ }else{
+    return "Please wait ..."
  }
 }
 

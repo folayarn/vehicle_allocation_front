@@ -25,7 +25,7 @@ import { FetchDriversByVehicleThunk } from "../../../store/thunks/DriverThunk";
 import { FetchMaintenanceRequestByVehicleThunk } from "../../../store/thunks/MaintenanceRequestThunk";
 import MaintenanceRequestForm from "../../../components/MaintenanceRequest";
 
- const AllocationPage = () => {
+ const ServiceableVehiclePage = () => {
   const [open, setOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [openView, setOpenView] = useState(false);
@@ -119,27 +119,27 @@ const handleOpenAllocation = (row) => {
     ),
   },
   
-  // {    Header: "Action",
-  //   Cell: ({ row }) => (
-  //     <div className="flex space-x-2 w-full justify-start">
+  {    Header: "Action",
+    Cell: ({ row }) => (
+      <div className="flex space-x-2 w-full justify-start">
         
-  // <Button size="sm" color="orange" onClick={() => handleOpenMain(row)}>
-  //          {"Check Maintenace Request"} 
-  //       </Button>
+ <Button size="sm" color="orange" onClick={() => handleOpenMain(row)}>
+           {"Check Maintenace Request"} 
+        </Button>
 
-  //           </div>
-  //   )
-  // }, 
+            </div>
+    )
+  },
   {    Header: "Actions",
     Cell: ({ row }) => (
       <div className="flex space-x-2 w-full justify-start">
          <Button size="sm" color="green" onClick={() => handleOpenAllocation(row)}>
-            Re-Allocate
+            Allocate
             </Button>
-{/*  
+ 
              <Button size="sm" color="blue" onClick={() => handleOpenDriverForm(row)}>
             add Driver
-            </Button> */}
+            </Button>
             </div>
     )
   },
@@ -194,13 +194,13 @@ const handleOpenAllocation = (row) => {
     <>
     <Card className="ml-auto border  border-blue-gray-100 shadow-sm p-10 h-fit">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">All Allocation Records</h2>
+        <h2 className="text-2xl font-bold">Serviceable Vehicle Records</h2>
         {/* <Button className="bg-green-500" onClick={handleOpen}>+ Add New Vehicle</Button>   */}
       </div>
 
 <div className="overflow-x-auto max-w-[100%]">
   <ServerSideTableComponent
-                               type={"getAllocatedVehicle"}
+                               type={"vehicle"}
                                columns={vehicleColumns}
                                serverSideFiltering={isServerSide}
                                serverSideSorting={isServerSide}
@@ -243,4 +243,4 @@ const handleOpenAllocation = (row) => {
  </> );
 };
 
-export default AllocationPage
+export default ServiceableVehiclePage

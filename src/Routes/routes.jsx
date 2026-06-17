@@ -1,11 +1,11 @@
-import { FaDollarSign, FaHome, FaMapMarkedAlt, FaRocket, FaUserAlt, FaWarehouse } from "react-icons/fa";
+import { FaCar, FaCarAlt, FaDollarSign, FaHome, FaMapMarkedAlt, FaRocket, FaToolbox, FaUserAlt, FaWarehouse } from "react-icons/fa";
 import SignIn from "../pages/auth/sign-in";
 import AdminDasboard from "../pages/admin/dashboard/dashboard";
 
 
 
 import OfficerPage from "../pages/admin/officers";
-import { FaBookOpen, FaLaptop, FaRadio } from "react-icons/fa6";
+import { FaBookOpen, FaCarBurst, FaCarOn, FaLaptop, FaMagnifyingGlassLocation, FaRadio } from "react-icons/fa6";
 import AllocationPage from "../pages/allocator/allocationPage";
 import ViewAllocationPage from "../pages/view";
 import DriverPage from "../pages/driver";
@@ -19,6 +19,8 @@ import { AssetSignIn } from "../pages/auth/Asset-sign-in";
 import AccommodationSignIn from "../pages/auth/Accommodation-sign-in";
 import AssetDashboard from "../pages/admin/dashboard/asset_dashboard";
 import AssetPage from "../pages/asset_management";
+import ServiceableVehiclePage from "../pages/allocator/serviceable";
+import AllVehiclePage from "../pages/allocator/allVehicle";
 
 
 
@@ -165,17 +167,55 @@ export const routes = [
         role: "transport",
         element: <AdminDasboard/>
       },
- {       icon: <FaHome size={20} />,
+      {       icon: <FaCar size={20} />,
+        name: "All Vehicles",
+        path: "/all-vehicles",
+        role: "allocator",
+        element: <AllVehiclePage/>,
+    },
+ 
+ {       icon:<FaCar size={20} />,
+        name: "Serviceable Vehicles",
+        path: "/service",
+        role: "allocator",
+        element: <ServiceableVehiclePage/>,
+    }, 
+    {       icon: <FaMagnifyingGlassLocation size={20} />,
         name: "Allocations",
         path: "/allocations",
         role: "allocator",
         element: <AllocationPage/>,
     },
-
-    {       icon: <FaHome size={20} />,
+    {       icon: <FaCarBurst size={20} />,
         name: "Unserviceable Vehicles",
         path: "/unservice",
         role: "allocator",
+        element: <UnserviceableAllocationPage/>,
+    },
+
+     {       icon: <FaCar size={20} />,
+        name: "All Vehicles",
+        path: "/all-vehicles",
+        role: "admin",
+        element: <AllVehiclePage/>,
+    },
+ 
+ {       icon:<FaCar size={20} />,
+        name: "Serviceable Vehicles",
+        path: "/service",
+        role: "admin",
+        element: <ServiceableVehiclePage/>,
+    }, 
+    {       icon: <FaMagnifyingGlassLocation size={20} />,
+        name: "Allocations",
+        path: "/allocations",
+        role: "admin",
+        element: <AllocationPage/>,
+    },
+    {       icon: <FaCarBurst size={20} />,
+        name: "Unserviceable Vehicles",
+        path: "/unservice",
+        role: "admin",
         element: <UnserviceableAllocationPage/>,
     },
  
@@ -220,31 +260,21 @@ export const routes = [
         role: "zone",
         element: <ViewAllocationPage/>,
     },
-{       icon: <FaHome size={20} />,
-        name: "Allocations",
-        path: "/allocations",
-        role: "admin",
-        element: <AllocationPage/>,
-    },
 
-    {       icon: <FaHome size={20} />,
+
+    {       icon: <FaToolbox size={20} />,
         name: "Spare Part Request",
         path: "/sparepart",
         role: "allocator",
         element: <SparePartPage/>,
     },
-    {       icon: <FaHome size={20} />,
+    {       icon: <FaToolbox size={20} />,
         name: "Spare Part Request",
         path: "/sparepart",
         role: "store",
         element: <SparePartPage/>,
     },
-    {       icon: <FaHome size={20} />,
-        name: "Unserviceable Vehicles",
-        path: "/unservice",
-        role: "admin",
-        element: <UnserviceableAllocationPage/>,
-    },
+    
       {
         icon: <FaUserAlt size={20} />,
         name: "User Management",
@@ -253,7 +283,7 @@ export const routes = [
         element: <OfficerPage/>,
       },
 
-      {       icon: <FaHome size={20} />,
+      { icon: <FaHome size={20} />,
         name: "Allocations",
         path: "/allocations",
         role: "user",

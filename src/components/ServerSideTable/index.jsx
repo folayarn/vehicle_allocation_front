@@ -5,8 +5,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CSVLink } from 'react-csv';
 import { useTable, usePagination, useSortBy } from 'react-table';
-import { FaFileCsv, FaFilePdf, FaPrint, FaSearch, FaFilter, FaCalendarAlt, FaSyncAlt } from 'react-icons/fa';
-import Select from 'react-select';
+import { FaFileCsv, FaFilePdf, FaPrint, FaSearch, FaCalendarAlt, FaSyncAlt } from 'react-icons/fa';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { FetchServerTableThunk } from '../../store/thunks/ServerTableThunk';
@@ -24,17 +23,17 @@ const ServerSideTableComponent = ({
   // State
   const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
-  const [hoveredCell, setHoveredCell] = useState(null);
   const [sortBy, setSortBy] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
+  const [dataVersion, setDataVersion] = useState(0); // Track data changes
   
   const itemsPerPage = initialPageSize;
   const timeoutRef = useRef(null);
+  const isFirstLoad = useRef(true);
   
   // Store current state in ref to avoid dependencies
   const stateRef = useRef({
     searchTerm: '',
-    
     dateRange: { start: '', end: '' },
     sortBy: [],
     currentPage: 0
@@ -44,19 +43,18 @@ const ServerSideTableComponent = ({
   useEffect(() => {
     stateRef.current = {
       searchTerm,
-  
       dateRange,
       sortBy,
       currentPage
     };
-  }, [searchTerm,  dateRange, sortBy, currentPage]);
+  }, [searchTerm, dateRange, sortBy, currentPage]);
 
   // Get data directly from Redux
   const displayData = tableState?.data || [];
   const displayTotalCount = tableState?.totalCount || 0;
   const isLoading = tableState?.loading || false;
 
-  // SINGLE fetch function with NO dependencies
+  // SINGLE fetch function
   const fetchData = (page = currentPage, resetPage = false) => {
     if (!serverSideFiltering) return;
     
@@ -72,6 +70,9 @@ const ServerSideTableComponent = ({
         setCurrentPage(0);
       }
       
+      // Increment version to force table re-render
+      setDataVersion(prev => prev + 1);
+      
       dispatch(FetchServerTableThunk({
         type,
         pageIndex: pageToUse,
@@ -85,21 +86,22 @@ const ServerSideTableComponent = ({
     }, 500);
   };
 
-  // ONE SINGLE useEffect for initial load
+  // Initial load
   useEffect(() => {
-    if (serverSideFiltering) {
-
+    if (serverSideFiltering && isFirstLoad.current) {
+      isFirstLoad.current = false;
       fetchData(0, true);
     }
-  }, [serverSideFiltering, type]); // Only these two dependencies
+  }, [serverSideFiltering, type]);
 
   // Reset when type changes
   useEffect(() => {
     setSearchTerm('');
-    
     setDateRange({ start: '', end: '' });
     setCurrentPage(0);
     setSortBy([]);
+    setDataVersion(prev => prev + 1);
+    isFirstLoad.current = true; // Reset for new type
   }, [type]);
 
   // Cleanup
@@ -111,14 +113,11 @@ const ServerSideTableComponent = ({
     };
   }, []);
 
-  
-  // SIMPLE event handlers
+  // Event handlers
   const handleSearchChange = (value) => {
     setSearchTerm(value);
     fetchData(currentPage, true);
   };
-
-  
 
   const handleDateRangeChange = (key, value) => {
     setDateRange(prev => {
@@ -151,7 +150,7 @@ const ServerSideTableComponent = ({
     fetchData(currentPage, true);
   };
 
-  // Table instance
+  // Table instance with key to force re-render
   const tableInstance = useTable(
     {
       columns: useMemo(() => columns, [columns]),
@@ -253,42 +252,35 @@ const ServerSideTableComponent = ({
       }
     });
     
-    const fileName = type && date
-      ? `${type}-${factoryFilter.replace(/\s+/g, '-')}-${date}.pdf` 
-      : `${type}-${date}.pdf`;
-    
+    const fileName = `${type}-${date}.pdf`;
     doc.save(fileName);
   };
 
- 
-
-  const customStyles = {
-    control: (provided, state) => ({
-      ...provided,
-      minHeight: '42px',
-      borderColor: state.isFocused ? '#0d9488' : '#d1d5db',
-      boxShadow: state.isFocused ? '0 0 0 2px rgba(13, 148, 136, 0.2)' : 'none',
-      '&:hover': {
-        borderColor: state.isFocused ? '#0d9488' : '#9ca3af'
-      }
-    })
-  };
-
-  
-
   // Table rendering
   const renderTableBody = () => {
+    // Show loading state if loading and no data
+    if (isLoading && displayData.length === 0) {
+      return (
+        <tr>
+          <td colSpan={columns.length} className="px-6 py-4 text-center">
+            <div className="flex justify-center items-center">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-500"></div>
+              <span className="ml-2 text-gray-600">Loading...</span>
+            </div>
+          </td>
+        </tr>
+      );
+    }
+
     if (page.length === 0) {
       return (
-<tr>
+        <tr>
           <td colSpan={columns.length} className="px-6 py-4 text-center text-gray-500">
-            {searchTerm  || dateRange.start || dateRange.end
+            {searchTerm || dateRange.start || dateRange.end
               ? 'No results found for current filters'
               : 'No data available'}
           </td>
         </tr>
-     
-        
       );
     }
 
@@ -296,42 +288,27 @@ const ServerSideTableComponent = ({
       prepareRow(row);
       const { key, ...rowProps } = row.getRowProps();
       
-      
       return (
-      <>
-      {row.original.accessLevel !="admin" &&(
         <tr key={key} {...rowProps} className='w-full'>
           {row.cells.map((cell, cellIndex) => {
             const { key: cellKey, ...cellProps } = cell.getCellProps();
-            const cellId = `${key}-${cellIndex}`;
             
             return (
               <td 
                 key={cellKey}
                 {...cellProps}
                 className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-wrap text-left relative group"
-                // onMouseEnter={() => setHoveredCell(cellId)}
-                // onMouseLeave={() => setHoveredCell(null)}
               >
                 <div className="truncate max-w-xs">
                   {cell.render('Cell')}
                 </div>
-                
-                {/* {hoveredCell === cellId && (
-                  <div className="mt-1 p-2 bg-gray-800 text-white text-xs rounded-md shadow-lg max-w-xs break-words whitespace-normal">
-                    {cell.render('Cell')}
-                  </div>
-                )} */}
               </td>
             );
           })}
         </tr>
-      )}
-      </>
       );
     });
   };
-
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
@@ -349,36 +326,32 @@ const ServerSideTableComponent = ({
             <span className="hidden sm:inline">PDF</span>
           </Button>
           
-          {type !== 'activeProduction' && (
-            <CSVLink 
-              data={displayData} 
-              headers={headers} 
-              filename={`${type}-${Date.now()}-data.csv`}
-            >
-              <Button 
-                size="sm" 
-                color="green" 
-                className="flex items-center gap-1 hover:shadow-md transition-all"
-                disabled={isLoading}
-              >
-                <FaFileCsv className="text-sm" />
-                <span className="hidden sm:inline">CSV</span>
-              </Button>
-            </CSVLink>
-          )}
-          
-          {type === 'activeProduction' && (
+          <CSVLink 
+            data={displayData} 
+            headers={headers} 
+            filename={`${type}-${Date.now()}-data.csv`}
+          >
             <Button 
               size="sm" 
               color="green" 
-              onClick={() => window.print()} 
               className="flex items-center gap-1 hover:shadow-md transition-all"
               disabled={isLoading}
             >
-              <FaPrint className="text-sm" />
-              <span className="hidden sm:inline">Print</span>
+              <FaFileCsv className="text-sm" />
+              <span className="hidden sm:inline">CSV</span>
             </Button>
-          )}
+          </CSVLink>
+          
+          <Button 
+            size="sm" 
+            color="green" 
+            onClick={() => window.print()} 
+            className="flex items-center gap-1 hover:shadow-md transition-all"
+            disabled={isLoading}
+          >
+            <FaPrint className="text-sm" />
+            <span className="hidden sm:inline">Print</span>
+          </Button>
       
           <Button 
             size="sm" 
@@ -393,8 +366,6 @@ const ServerSideTableComponent = ({
         </div>
         
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          
-          
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -406,7 +377,7 @@ const ServerSideTableComponent = ({
                 onChange={(e) => handleDateRangeChange('start', e.target.value)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                 placeholder="Start Date"
-                
+                disabled={isLoading}
               />
             </div>
             
@@ -418,7 +389,7 @@ const ServerSideTableComponent = ({
                 className="block w-full pl-3 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                 placeholder="End Date"
                 min={dateRange.start}
-                
+                disabled={isLoading}
               />
             </div>
             
@@ -443,22 +414,25 @@ const ServerSideTableComponent = ({
               value={searchTerm}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 sm:text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
-            
+              disabled={isLoading}
             />
           </div>
         </div>
       </div>
 
-      {/* Loading state */}
-      {isLoading && (
-        <div className="flex justify-center items-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500"></div>
-          <span className="ml-2 text-gray-600">Loading...</span>
-        </div>
-      )}
+      {/* Table with Loading Overlay */}
+      <div className="relative">
+        {/* Loading Overlay */}
+        {isLoading && displayData.length > 0 && (
+          <div className="absolute inset-0 bg-white bg-opacity-75 z-10 flex items-center justify-center rounded-lg">
+            <div className="flex flex-col items-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500"></div>
+              <span className="mt-2 text-gray-600 font-medium">Updating data...</span>
+            </div>
+          </div>
+        )}
 
-      {/* Table */}
-      {!isLoading && (
+        {/* Table */}
         <div className="overflow-x-auto">
           <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
             <thead className="bg-teal-50">
@@ -498,76 +472,76 @@ const ServerSideTableComponent = ({
             </tbody>
           </table>
         </div>
-      )}
 
-      {/* Pagination */}
-      {pageOptions.length > 1 && (
-        <div className="flex flex-col sm:flex-row justify-between items-center mt-4 px-2 py-3 bg-gray-50 rounded-b-lg">
-          <div className="mb-2 sm:mb-0 text-sm text-gray-600">
-            Showing <span className="font-medium">{(currentPage * itemsPerPage) + 1}</span> to{' '}
-            <span className="font-medium">{Math.min((currentPage + 1) * itemsPerPage, displayTotalCount)}</span> of{' '}
-            <span className="font-medium">{displayTotalCount}</span> entries
-            {serverSideFiltering && ` (Page ${currentPage + 1} of ${pageOptions.length})`}
-          </div>
-          
-          <div className="flex items-center gap-1">
-            <Button
-              variant="outlined"
-              size="sm"
-              onClick={() => handleGotoPage(0)}
-              disabled={!canPreviousPage || isLoading}
-              className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
-            >
-              «
-            </Button>
-            <Button
-              variant="outlined"
-              size="sm"
-              onClick={handlePreviousPage}
-              disabled={!canPreviousPage}
-              className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
-            >
-              ‹
-            </Button>
+        {/* Pagination */}
+        {pageOptions.length > 1 && (
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-4 px-2 py-3 bg-gray-50 rounded-b-lg">
+            <div className="mb-2 sm:mb-0 text-sm text-gray-600">
+              Showing <span className="font-medium">{(currentPage * itemsPerPage) + 1}</span> to{' '}
+              <span className="font-medium">{Math.min((currentPage + 1) * itemsPerPage, displayTotalCount)}</span> of{' '}
+              <span className="font-medium">{displayTotalCount}</span> entries
+              {serverSideFiltering && ` (Page ${currentPage + 1} of ${pageOptions.length})`}
+            </div>
             
-            {pageOptions.slice(
-              Math.max(0, currentPage - 2),
-              Math.min(pageOptions.length, currentPage + 3)
-            ).map((pageNum) => (
+            <div className="flex items-center gap-1">
               <Button
-                key={pageNum}
+                variant="outlined"
                 size="sm"
-                onClick={() => handleGotoPage(pageNum)}
-                disabled={isLoading}
-                className={`rounded-full w-8 h-8 flex items-center justify-center ${
-                  currentPage === pageNum ? 'bg-teal-500 text-white hover:bg-teal-600' : 'bg-white hover:bg-gray-100'
-                } transition-colors disabled:opacity-50`}
+                onClick={() => handleGotoPage(0)}
+                disabled={!canPreviousPage || isLoading}
+                className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
               >
-                {pageNum + 1}
+                «
               </Button>
-            ))}
-            
-            <Button
-              variant="outlined"
-              size="sm"
-              onClick={handleNextPage}
-              disabled={!canNextPage}
-              className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
-            >
-              ›
-            </Button>
-            <Button
-              variant="outlined"
-              size="sm"
-              onClick={() => handleGotoPage(pageOptions.length - 1)}
-              disabled={!canNextPage}
-              className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
-            >
-              »
-            </Button>
+              <Button
+                variant="outlined"
+                size="sm"
+                onClick={handlePreviousPage}
+                disabled={!canPreviousPage || isLoading}
+                className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
+              >
+                ‹
+              </Button>
+              
+              {pageOptions.slice(
+                Math.max(0, currentPage - 2),
+                Math.min(pageOptions.length, currentPage + 3)
+              ).map((pageNum) => (
+                <Button
+                  key={pageNum}
+                  size="sm"
+                  onClick={() => handleGotoPage(pageNum)}
+                  disabled={isLoading}
+                  className={`rounded-full w-8 h-8 flex items-center justify-center ${
+                    currentPage === pageNum ? 'bg-teal-500 text-white hover:bg-teal-600' : 'bg-white hover:bg-gray-100'
+                  } transition-colors disabled:opacity-50`}
+                >
+                  {pageNum + 1}
+                </Button>
+              ))}
+              
+              <Button
+                variant="outlined"
+                size="sm"
+                onClick={handleNextPage}
+                disabled={!canNextPage || isLoading}
+                className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
+              >
+                ›
+              </Button>
+              <Button
+                variant="outlined"
+                size="sm"
+                onClick={() => handleGotoPage(pageOptions.length - 1)}
+                disabled={!canNextPage || isLoading}
+                className="rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50"
+              >
+                »
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

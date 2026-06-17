@@ -25,7 +25,7 @@ import { FetchDriversByVehicleThunk } from "../../../store/thunks/DriverThunk";
 import { FetchMaintenanceRequestByVehicleThunk } from "../../../store/thunks/MaintenanceRequestThunk";
 import MaintenanceRequestForm from "../../../components/MaintenanceRequest";
 
- const AllocationPage = () => {
+ const AllVehiclePage = () => {
   const [open, setOpen] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [openView, setOpenView] = useState(false);
@@ -97,19 +97,19 @@ const handleOpenAllocation = (row) => {
     accessor: "command",
     Cell: ({ row }) => <div>{row.original.command || "N/A"}</div>,
   },
-  // {
-  //   Header: "Condition",
-  //   accessor: "condition",
-  //   Cell: ({ row }) => {
-  //     const condition = row.original.condition;
-  //     let colorClass = "text-gray-600";
-  //     if (condition === "SERVICEABLE") colorClass = "text-green-600 font-semibold";
-  //     if (condition === "UNSERVICEABLE") colorClass = "text-red-600";
+  {
+    Header: "Condition",
+    accessor: "condition",
+    Cell: ({ row }) => {
+      const condition = row.original.condition;
+      let colorClass = "text-gray-600";
+      if (condition === "SERVICEABLE") colorClass = "text-green-600 font-semibold";
+      if (condition === "UNSERVICEABLE") colorClass = "text-red-600";
       
       
-  //     return <div className={colorClass}>{condition || "N/A"}</div>;
-  //   },
-  // },
+      return <div className={colorClass}>{condition || "N/A"}</div>;
+    },
+  },
   
   {
     Header: "Date",
@@ -119,45 +119,23 @@ const handleOpenAllocation = (row) => {
     ),
   },
   
-  // {    Header: "Action",
-  //   Cell: ({ row }) => (
-  //     <div className="flex space-x-2 w-full justify-start">
-        
-  // <Button size="sm" color="orange" onClick={() => handleOpenMain(row)}>
-  //          {"Check Maintenace Request"} 
-  //       </Button>
-
-  //           </div>
-  //   )
-  // }, 
-  {    Header: "Actions",
-    Cell: ({ row }) => (
-      <div className="flex space-x-2 w-full justify-start">
-         <Button size="sm" color="green" onClick={() => handleOpenAllocation(row)}>
-            Re-Allocate
-            </Button>
-{/*  
-             <Button size="sm" color="blue" onClick={() => handleOpenDriverForm(row)}>
-            add Driver
-            </Button> */}
-            </div>
-    )
-  },
+ 
+ 
   {
-    Header: "More Actions",
+    Header: "Actions",
     Cell: ({ row }) => (
       <div className="flex space-x-2 w-full justify-start">
         <Button size="sm" color="gray" onClick={() => handleOpenView(row)}>
             <FaEye /> 
         </Button>
-        {/* <Button size="sm" color="blue" onClick={() => handleOpenEdit(row)}>
+        <Button size="sm" color="blue" onClick={() => handleOpenEdit(row)}>
           <FaPencilAlt /> 
-        </Button> */}
-       {/* {role =="admin" && (
+        </Button>
+       {role =="admin" && (
 <Button size="sm" color="red" onClick={() => handleDelete(row.original.id)}>
           <FaTrash /> 
         </Button>
-       )} */}
+       )}
         
 
         </div>
@@ -194,13 +172,13 @@ const handleOpenAllocation = (row) => {
     <>
     <Card className="ml-auto border  border-blue-gray-100 shadow-sm p-10 h-fit">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">All Allocation Records</h2>
-        {/* <Button className="bg-green-500" onClick={handleOpen}>+ Add New Vehicle</Button>   */}
+        <h2 className="text-2xl font-bold">All Vehicle Records</h2>
+        <Button className="bg-green-500" onClick={handleOpen}>+ Add New Vehicle</Button>  
       </div>
 
 <div className="overflow-x-auto max-w-[100%]">
   <ServerSideTableComponent
-                               type={"getAllocatedVehicle"}
+                               type={"getVehicleAll"}
                                columns={vehicleColumns}
                                serverSideFiltering={isServerSide}
                                serverSideSorting={isServerSide}
@@ -243,4 +221,4 @@ const handleOpenAllocation = (row) => {
  </> );
 };
 
-export default AllocationPage
+export default AllVehiclePage

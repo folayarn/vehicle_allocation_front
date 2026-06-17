@@ -50,6 +50,8 @@ builder
 .addCase(FetchServerTableThunk.pending, (state) => {
   state.serverTable.loading = true;
   state.serverTable.error = null;
+  state.serverTable.data=[]
+  
 })
 .addCase(FetchServerTableThunk.fulfilled, (state, action) => {
   state.serverTable.loading = false;

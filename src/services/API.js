@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // Create Axios instance
-//const base_url = import.meta.env.VITE_API_URL
-const base_url = "https://fms-api.customs.gov.ng/api"
+const base_url = import.meta.env.VITE_API_URL
+//const base_url = "https://fms-api.customs.gov.ng/api"
 
 export const Api = axios.create({
   baseURL: base_url,
@@ -22,12 +22,10 @@ Api.interceptors.request.use((config) => {
 }, (error) => {
   return Promise.reject(error);
 });
-
-// Flag to prevent multiple token refresh attempts
 let isRefreshing = false;
 let subscribers = [];
 
-// Function to refresh token
+// Flag to prevent multiple token refresh attempts
 const refreshAccessToken = async () => {
   try {
     const refreshToken = sessionStorage.getItem("refreshToken");
@@ -48,7 +46,7 @@ const refreshAccessToken = async () => {
     return accessToken;
   } catch (error) {
     sessionStorage.clear()
-location.href = '/';
+    location.href = '/';
     return Promise.reject(error);
   }
 };
@@ -94,6 +92,7 @@ Api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 // ==================== AUTHENTICATION APIs ====================
 export const Login = (data) => {
@@ -175,10 +174,15 @@ export const getZones = () => {
 };
 
 
-export const getVehicle = (params)=>{
+export const getVehicleAll = (params)=>{
   return Api.get('VehicleAssessment/get-all/'+sessionStorage.getItem('e'), { params });
 }
-
+export const getVehicle = (params)=>{
+  return Api.get('VehicleAssessment/get-all/serviceable/'+sessionStorage.getItem('e'), { params });
+}
+export const getAllocatedVehicle = (params)=>{
+  return Api.get('VehicleAssessment/get-all/allocated/'+sessionStorage.getItem('e'), { params });
+}
 export const getAsset = (params)=>{
   return Api.get('Assets/get-all/'+sessionStorage.getItem('e'), { params });
 }
