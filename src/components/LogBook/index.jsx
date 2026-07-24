@@ -320,7 +320,10 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
           )}
 
           {/* Log Form Modal */}
-          <Dialog open={showForm} handler={setShowForm} size="xl">
+          <Dialog open={showForm} handler={setShowForm} size="xl"
+          
+          className="max-h-[90vh] overflow-y-auto"
+          >
             <DialogHeader>
               <div className="flex items-center gap-2">
                 {isEditMode ? <FaEdit /> : <FaPlus />}
@@ -332,6 +335,7 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
+                
                 enableReinitialize={true}
               >
                 {({ values, setFieldValue, isSubmitting }) => (
