@@ -682,21 +682,21 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
                         <Typography variant="small" className="font-medium">{single.remarks}</Typography>
                       </div>
                     )}
-                    {single.reasonForRjection && (
+                    {/* {single.reasonForRjection && (
                       <div className="col-span-2">
                         <Typography variant="small" color="gray" className="text-xs">Rejection Reason</Typography>
                         <Typography variant="small" className="font-medium text-red-600">{single.reasonForRjection}</Typography>
                       </div>
-                    )}
-                    <div>
+                    )} */}
+                    {/* <div>
                       <Typography variant="small" color="gray" className="text-xs">Status</Typography>
                       <Chip value={single.status} size="sm" color={single.status === 'Approved' ? 'green' : single.status === 'Rejected' ? 'red' : 'orange'} />
-                    </div>
+                    </div> */}
                     <div>
                       <Typography variant="small" color="gray" className="text-xs">Created At</Typography>
                       <Typography variant="small" className="font-medium">{moment(single.createdAt).format('DD/MM/YYYY HH:mm')}</Typography>
                     </div>
-                    {single.approvedBy && (
+                    {/* {single.approvedBy && (
                       <div>
                         <Typography variant="small" color="gray" className="text-xs">Approved By</Typography>
                         <Typography variant="small" className="font-medium">{single.approvedBy}</Typography>
@@ -707,7 +707,7 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
                         <Typography variant="small" color="gray" className="text-xs">Rejected By</Typography>
                         <Typography variant="small" className="font-medium">{single.rejectedBy}</Typography>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
               )}
@@ -737,7 +737,7 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
                         Distance (km)
                       </div>
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
+                    {/* <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
                       <div className="flex items-center gap-2">
                         <FaUser className="w-3 h-3" />
                         Officer
@@ -748,7 +748,7 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
                         <FaUser className="w-3 h-3" />
                         Status
                       </div>
-                    </th>
+                    </th> */}
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">
                       <div className="flex items-center gap-2">
                         <FaClock className="w-3 h-3" />
@@ -773,30 +773,30 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
                         <div className="text-sm font-medium">
                           {log.from || 'N/A'} → {log.to || 'N/A'}
                         </div>
-                        {log.authorityNo && (
+                        {/* {log.authorityNo && (
                           <div className="text-xs text-gray-500 mt-1">
                             Auth: {log.authorityNo}
                           </div>
-                        )}
+                        )} */}
                       </td>
                       <td className="px-4 py-3 text-sm font-mono font-medium">
                         {calculateDistance(log.mileageBefore, log.mileageAfter)} km
                       </td>
-                      <td className="px-4 py-3 text-sm">
+                      {/* <td className="px-4 py-3 text-sm">
                         {log.officerCarried || 'N/A'}
                       </td>
                       <td className="px-4 py-3 text-sm">
                         <div className={`inline-flex items-center gap-2 px-2 py-1 rounded-full ${getStatusColor(log.status)} text-white text-xs`}>
                           {getStatusIcon(log.status)}
                           <span>{log.status || 'N/A'}</span>
-                        </div>
-                        {log.rejectionReason && (
+                        </div> */}
+                        {/* {log.rejectionReason && (
                           <div className="text-xs text-red-500 mt-1 flex items-center gap-1">
                             <FaCommentDots className="w-2 h-2" />
                             {log.rejectionReason.length > 30 ? log.rejectionReason.substring(0, 30) + '...' : log.rejectionReason}
                           </div>
-                        )}
-                      </td>
+                        )} */}
+                      {/* </td> */}
                       <td className="px-4 py-3 text-sm">
                         <Chip
                           value={calculateDuration(log.timeOut, log.timeIn)}
@@ -842,7 +842,7 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
                               </Button>
                             </>
                           )}
-
+{/* 
                           {isChiefDriver && log.status === 'Pending' && (
                             <>
                               <Button
@@ -864,7 +864,7 @@ const LogBookForm = ({ setOpen, vehicleData }) => {
                                 Reject
                               </Button>
                             </>
-                          )}
+                          )} */}
                         </div>
                       </td>
                     </tr>
