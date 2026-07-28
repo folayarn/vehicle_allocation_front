@@ -1,6 +1,6 @@
 // store/thunks/FuelRequestThunk.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../services/api';
+import {api} from '../../services/api';
 
 export const CreateFuelRequestThunk = createAsyncThunk(
   'fuelRequest/create',
