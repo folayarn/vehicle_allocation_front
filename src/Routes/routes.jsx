@@ -1,11 +1,11 @@
-import { FaCar, FaCarAlt, FaDollarSign, FaHome, FaMapMarkedAlt, FaRocket, FaToolbox, FaUserAlt, FaWarehouse } from "react-icons/fa";
+import { FaCar, FaCarAlt, FaDollarSign, FaGasPump, FaHome, FaMapMarkedAlt, FaRocket, FaToolbox, FaUserAlt, FaWarehouse } from "react-icons/fa";
 import SignIn from "../pages/auth/sign-in";
 import AdminDasboard from "../pages/admin/dashboard/dashboard";
 
 
 
 import OfficerPage from "../pages/admin/officers";
-import { FaBookOpen, FaCarBurst, FaCarOn, FaLaptop, FaMagnifyingGlassLocation, FaRadio } from "react-icons/fa6";
+import { FaBookOpen, FaCarBurst, FaCarOn, FaLaptop, FaMagnifyingGlassLocation, FaRadio, FaWater } from "react-icons/fa6";
 import AllocationPage from "../pages/allocator/allocationPage";
 import ViewAllocationPage from "../pages/view";
 import DriverPage from "../pages/driver";
@@ -21,6 +21,7 @@ import AssetDashboard from "../pages/admin/dashboard/asset_dashboard";
 import AssetPage from "../pages/asset_management";
 import ServiceableVehiclePage from "../pages/allocator/serviceable";
 import AllVehiclePage from "../pages/allocator/allVehicle";
+import FuelRequestPage from "../pages/fuel";
 
 
 
@@ -259,6 +260,24 @@ export const routes = [
         path: "/allocations",
         role: "zone",
         element: <ViewAllocationPage/>,
+    },
+ {       icon: <FaGasPump size={20} />,
+        name: "Fuel Requests",
+        path: "/fuel-requests",
+        role: "driver",
+        element: <FuelRequestPage/>,
+    },
+{       icon: <FaGasPump size={20} />,
+        name: "Fuel Requests",
+        path: "/fuel-requests",
+        role: "store",
+        element: <FuelRequestPage/>,
+    },
+    {       icon: <FaGasPump size={20} />,
+        name: "Fuel Requests",
+        path: "/fuel-requests",
+        role: "allocator",
+        element: <FuelRequestPage/>,
     },
 
 

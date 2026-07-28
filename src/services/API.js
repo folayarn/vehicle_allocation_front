@@ -455,6 +455,9 @@ export const getAssetsByDateRange = (startDate, endDate) => {
   });
 };
 
+export const getFuelRequests = (params)=>{
+  return Api.get('FuelRequest/get-all/'+sessionStorage.getItem('e'), { params });
+}
 
 
 

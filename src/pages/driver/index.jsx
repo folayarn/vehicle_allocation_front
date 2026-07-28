@@ -22,6 +22,8 @@ import LogBookForm from "../../components/LogBook";
 import { FetchLogBooksByVehicleThunk } from "../../store/thunks/LogBookThunk";
 import { FetchMaintenanceRequestByVehicleThunk } from "../../store/thunks/MaintenanceRequestThunk";
 import MaintenanceRequestForm from "../../components/MaintenanceRequest";
+import FuelRequestForm from "../../components/FuelRequestForm";
+import { GetSingleVehicleThunk } from "../../store/thunks/VehicleThunk";
 
  const DriverPage = () => {
   const [open, setOpen] = useState(false);
@@ -30,6 +32,8 @@ import MaintenanceRequestForm from "../../components/MaintenanceRequest";
   const [openAllocation, setOpenAllocation] = useState(false);
   const [single, setSingle] = useState({})
   const [showDrivers, setShowDrivers] = useState(false);
+    const [showFuelRequests, setShowFuelRequests] = useState(false);
+
 
   
   const dispatch=useDispatch()
@@ -67,6 +71,13 @@ import MaintenanceRequestForm from "../../components/MaintenanceRequest";
   };
   
  
+  const handleOpenFuelRequest = (row) =>{
+        dispatch(GetSingleVehicleThunk(row.original.id)).then(() => {    
+     
+    setShowFuelRequests(true)
+        }
+      )
+   }
 
   const role = sessionStorage.getItem("role");
   
@@ -114,10 +125,26 @@ import MaintenanceRequestForm from "../../components/MaintenanceRequest";
         <Button size="sm" color="blue" onClick={() => handleOpenView(row)}>
            {role =="driver"? "Fill Log Book":"Check Log Book"} 
         </Button>
+ <Button size="sm" color="gray" onClick={() => handleOpenFuelRequest(row)}>
+           {"Request for Fuel"} 
+        </Button>
+         
 
+        
+
+        </div>
+    ),
+  },
+  {
+    Header: "Action",
+    Cell: ({ row }) => (
+      <div className="flex space-x-2 w-full justify-start">
+       
          <Button size="sm" color="orange" onClick={() => handleOpenMain(row)}>
            {"Request for Maintenace"} 
         </Button>
+
+        
 
         </div>
     ),
@@ -153,6 +180,11 @@ import MaintenanceRequestForm from "../../components/MaintenanceRequest";
     
     <ModalComponent size={"xl"} open={openView} setOpen={setOpenView} title="ENTER LOG BOOK ">
       <LogBookForm setOpen={setOpenView} vehicleData={single}/>
+    </ModalComponent>
+
+
+     <ModalComponent size={"xl"} open={showFuelRequests} setOpen={setShowFuelRequests} title="Request for Fuel">
+      <FuelRequestForm setOpen={setShowFuelRequests} vehicleData={singleData}/>
     </ModalComponent>
 
     <ModalComponent size={"xl"} open={openMain} setOpen={setOpenMain} title="Request For Maintenance ">
