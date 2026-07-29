@@ -28,7 +28,7 @@ const AssetDashboard = () => {
     setSelectedDate(new Date().toISOString().split('T')[0]);
   };
 
-  if (loading && !statisticsCardsData) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spinner className="h-12 w-12" />

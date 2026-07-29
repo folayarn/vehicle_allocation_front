@@ -17,7 +17,6 @@ const AdminDashboard = () => {
     await refetch();
     setIsRefreshing(false);
   }, [refetch]);
-
   const handleDateRangeChange = (value) => {
     setDateRange(value);
     setSelectedDate(null); // Clear specific date when range changes
@@ -28,7 +27,7 @@ const AdminDashboard = () => {
     setSelectedDate(new Date().toISOString().split('T')[0]);
   };
 
-  if (loading && !statisticsCardsData) {
+  if (loading ) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Spinner className="h-12 w-12" />
@@ -237,32 +236,5 @@ const DashboardSkeleton = () => (
   </div>
 );
 
-// Update the useCardData hook to support refetch
-// Add this to your card-data.js file:
-/*
-const useCardData = (dateRange = "yearly", selectedDate = null) => {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [dashboardData, setDashboardData] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const refetch = useCallback(() => {
-    setRefreshKey(prev => prev + 1);
-  }, []);
-
-  useEffect(() => {
-    // Your existing fetch logic
-    fetchData();
-  }, [dateRange, selectedDate, refreshKey]);
-
-  return { 
-    statisticsCardsData, 
-    loading, 
-    error,
-    rawData: dashboardData,
-    refetch // Add this to the return object
-  };
-};
-*/
 
 export default AdminDashboard;
