@@ -141,16 +141,16 @@ export const changePassword = (data) => {
   return Api.put('/update-password', data);
 };
 
-export const deleteUser = (id) => {
-  return Api.delete(`/delete-user/${id}`);
+export const deleteUser = (id,userType) => {
+  return Api.post(`/delete-user/${id}`,{userType:userType});
 };
 
-export const suspendUser = (id) => {
-  return Api.put(`/suspend-user/${id}`);
+export const suspendUser = (id,userType) => {
+  return Api.put(`/suspend-user/${id}`,{userType:userType});
 };
 
-export const unsuspendUser = (id) => {
-  return Api.put(`/unsuspend-user/${id}`);
+export const unsuspendUser = (id,userType) => {
+  return Api.put(`/unsuspend-user/${id}`,{userType:userType});
 };
 
 // ==================== COMMAND/ZONE APIs ====================

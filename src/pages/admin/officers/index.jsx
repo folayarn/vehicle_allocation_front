@@ -40,18 +40,22 @@ import ServerSideTableComponent from "../../../components/ServerSideTable";
 
       
   
-  const handleSuspend = (id) => {
+  const handleSuspend = (row) => {
     if(confirm("Are you sure you want to suspend this user?")){
-      suspendUser(id).then((res) => {
+          console.log(row)
+
+      suspendUser(row.userId,row.userType).then((res) => {
         window.location.reload();
       }).catch(err=>alert("Something went wrong"))
     }
 
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (row) => {
     if(confirm("Are you sure you want to delete this user?")){
-      deleteUser(id).then((res) => {
+          console.log(row)
+
+      deleteUser(row.userId,row.userType).then((res) => {
         window.location.reload();
       }).catch(err=> console.log(err))
     }
@@ -62,9 +66,10 @@ import ServerSideTableComponent from "../../../components/ServerSideTable";
     setOpenReset(true);
   };
   
-  const handleUnsuspend = (id) => {
+  const handleUnsuspend = (row) => {
     if(confirm("Are you sure you want to unsuspend this user?")){
-      unsuspendUser(id).then((res) => {
+    console.log(row)
+      unsuspendUser(row.userId,row.userType).then((res) => {
         window.location.reload();
       }).catch(err=>alert("Something went wrong"))
     }
@@ -124,25 +129,25 @@ import ServerSideTableComponent from "../../../components/ServerSideTable";
       Cell: ({row}) => (
         <>
         <div className="flex gap-2">
-          {role ==="admin" && (
+          {/* {role ==="admin" && (
             <>
 
             <Button color="orange" size="sm" 
             onClick={()=>handleOpenReset(row.original)}>
              Reset Password</Button>
             </>
-          )}
+          )} */}
         <Button color="blue" size="sm" onClick={()=>handleOpenEdit(row.original)}><FaPencil/></Button>
        {row.original.status ==="Suspended" ? (
         <>
-        <Button color="green" size="sm" onClick={() => handleUnsuspend(row.original.userId)}><FaUserAlt/></Button>
+        <Button color="green" size="sm" onClick={() => handleUnsuspend(row.original)}><FaUserAlt/></Button>
         </>
        ):(
-        <Button color="red" size="sm" onClick={() => handleSuspend(row.original.userId)}><FaUserAltSlash/></Button>
+        <Button color="red" size="sm" onClick={() => handleSuspend(row.original)}><FaUserAltSlash/></Button>
        )}
        
       {['admin'].includes(role) &&(
-         <Button color="red" size="sm" onClick={() => handleDelete(row.original.userId)}><FaTrash/></Button>
+         <Button color="red" size="sm" onClick={() => handleDelete(row.original)}><FaTrash/></Button>
       )} 
        
 
@@ -201,9 +206,9 @@ import ServerSideTableComponent from "../../../components/ServerSideTable";
       <UserForm isEdit={true} setOpen={setShowEdit} userData={userData} />
     </ModalComponent>
 
-    <ModalComponent size={"sm"} open={openReset} setOpen={setOpenReset} title="Reset Password">
+    {/* <ModalComponent size={"sm"} open={openReset} setOpen={setOpenReset} title="Reset Password">
     <ResetPassword setOpen={setOpenReset} userData={userData}/>
-    </ModalComponent>
+    </ModalComponent> */}
     </>
   );
 };
